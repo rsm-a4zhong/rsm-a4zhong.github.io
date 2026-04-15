@@ -1,12 +1,18 @@
 project:
   type: website
+  render:
+    - "*.qmd"
+    - "posts/"
+  resources:
+    - "hw1.html"
+    - "hw1_files/"
 
 website:
   title: "Alex Zhong"
   navbar:
-    left:
+    right:
       - href: index.qmd
-        text: Home
+        text: About
       - href: resume.qmd
         text: Resume
       - href: projects.qmd
@@ -15,9 +21,18 @@ website:
         text: Blog
       - href: contact.qmd
         text: Contact
+  page-footer:
+    left: "© 2026 Guanzong (Alex) Zhong"
+    right:
+      - icon: github
+        href: https://github.com/rsm-a4zhong
+      - icon: linkedin
+        href: https://www.linkedin.com/in/guanzong-zhong-58a4643a8/
+      - icon: envelope
+        href: mailto:a4zhong@ucsd.edu
 
 format:
   html:
     theme: cosmo
     css: styles.css
-    toc: true
+    toc: false

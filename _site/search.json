@@ -1,31 +1,10 @@
 [
   {
-    "objectID": "blog.html",
-    "href": "blog.html",
-    "title": "Blog",
-    "section": "",
-    "text": "A/B Testing a Call to Action\n\n\nWalking through the core machinery of classical frequentist\n\n\n\n\n\nApr 15, 2026\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "projects.html",
-    "href": "projects.html",
-    "title": "Projects",
-    "section": "",
-    "text": "A selection of analytics and machine learning projects I’ve worked on at Rady and beyond.\n\n\nCustomer Churn Prediction & Credit Card Offer Optimization\nMGTA 455 — Machine Learning for Business Analytics, UCSD Rady · 2026\nBuilt a predictive modeling pipeline to identify high-risk churn customers for a telecom provider (S-Mobile) and to optimize credit card offer targeting for a fintech (FiTech). Compared Logistic Regression, MLP, Random Forest, and XGBoost models, and translated model output into expected-profit rankings for marketing decisions.\nStack: Python, scikit-learn, XGBoost, pandas\n\n\n\nSupply Chain & Customer Loyalty Analytics — Thermo Fisher Scientific\nMSBA Capstone Project · 2026\nWorking with Thermo Fisher Scientific on an applied analytics capstone focused on supply chain forecasting and customer loyalty segmentation. The project combines transactional data analysis with predictive modeling to inform commercial strategy.\nStack: Python, SQL, Tableau\n\n\n\nMarket Microstructure Replication\nImperial College Group Project · 2025\nReplicated a published academic paper on order book dynamics and liquidity imbalance, extending the original analysis to a new dataset. Implemented all empirical tests in Python and authored sections covering the theoretical setup and the liquidity-imbalance extension.\nStack: Python, NumPy, statsmodels\n\nMore projects forthcoming."
-  },
-  {
     "objectID": "resume.html",
     "href": "resume.html",
     "title": "Resume",
     "section": "",
     "text": "You can download my resume as a PDF or view it below."
-  },
-  {
-    "objectID": "contact.html",
-    "href": "contact.html",
-    "title": "Contact",
-    "section": "",
-    "text": "The fastest way to reach me is by email.\nEmail: a4zhong@ucsd.edu\nLinkedIn: guanzong-zhong\nGitHub: rsm-a4zhong\nI’m based in San Diego and open to conversations about analytics, experimentation, internships, and full-time opportunities starting late 2026."
   },
   {
     "objectID": "posts/hw1-ab-test/index.html",
@@ -105,6 +84,20 @@
     "text": "Closing Remarks\nTaken together, the simulations above retrace the logic of classical frequentist inference on a single running example. The Law of Large Numbers assures us that the difference in sample means gets to the right answer given enough data. The Central Limit Theorem tells us the shape of its sampling distribution along the way, which lets us attach a standard error and build a confidence interval. The bootstrap supplies that standard error by resampling, and for this problem agrees closely with the analytical formula. Hypothesis testing converts the standardised estimate into a p-value that grades the evidence against a null of no effect. The regression framework reproduces the same inference in a form that generalises cleanly to richer designs. And the peeking simulation makes concrete how fragile the machinery becomes when its rules are bent — a reminder that frequentist guarantees hold only under the experimental protocol they assume.\nNone of this is new; all of it is used, every day, to decide which copy, which layout, or which price a website should show its visitors. Simulating it end-to-end, with a known ground truth, is a useful exercise in appreciating both what these tools deliver and what they quietly require in return."
   },
   {
+    "objectID": "contact.html",
+    "href": "contact.html",
+    "title": "Contact",
+    "section": "",
+    "text": "The fastest way to reach me is by email.\nEmail: a4zhong@ucsd.edu\nLinkedIn: guanzong-zhong\nGitHub: rsm-a4zhong\nI’m based in San Diego and open to conversations about analytics, experimentation, internships, and full-time opportunities starting late 2026."
+  },
+  {
+    "objectID": "blog.html",
+    "href": "blog.html",
+    "title": "Blog",
+    "section": "",
+    "text": "A/B Testing a Call to Action\n\n\nWalking through the core machinery of classical frequentist\n\n\n\n\n\nApr 15, 2026\n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Alex Zhong",
@@ -117,5 +110,12 @@
     "title": "Alex Zhong",
     "section": "Background",
     "text": "Background\nEducation University of California, San Diego — MS Business Analytics (2025–2026) University of Warwick — B.Sc. MORSE\nLanguages Mandarin (native) · Cantonese (fluent) · English (fluent, GRE 331)\nCurrently Working on a supply chain & customer loyalty analytics capstone with Thermo Fisher Scientific."
+  },
+  {
+    "objectID": "projects.html",
+    "href": "projects.html",
+    "title": "Projects",
+    "section": "",
+    "text": "A selection of analytics and machine learning projects I’ve worked on at Rady and beyond.\n\n\nCustomer Churn Prediction & Credit Card Offer Optimization\nMGTA 455 — Machine Learning for Business Analytics, UCSD Rady · 2026\nBuilt a predictive modeling pipeline to identify high-risk churn customers for a telecom provider (S-Mobile) and to optimize credit card offer targeting for a fintech (FiTech). Compared Logistic Regression, MLP, Random Forest, and XGBoost models, and translated model output into expected-profit rankings for marketing decisions.\nStack: Python, scikit-learn, XGBoost, pandas\n\n\n\nSupply Chain & Customer Loyalty Analytics — Thermo Fisher Scientific\nMSBA Capstone Project · 2026\nWorking with Thermo Fisher Scientific on an applied analytics capstone focused on supply chain forecasting and customer loyalty segmentation. The project combines transactional data analysis with predictive modeling to inform commercial strategy.\nStack: Python, SQL, Tableau\n\n\n\nMarket Microstructure Replication\nImperial College Group Project · 2025\nReplicated a published academic paper on order book dynamics and liquidity imbalance, extending the original analysis to a new dataset. Implemented all empirical tests in Python and authored sections covering the theoretical setup and the liquidity-imbalance extension.\nStack: Python, NumPy, statsmodels\n\nMore projects forthcoming."
   }
 ]
