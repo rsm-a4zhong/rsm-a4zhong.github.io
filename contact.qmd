@@ -1,0 +1,12 @@
+---
+title: "Contact"
+---
+The fastest way to reach me is by email.
+
+**Email:** [a4zhong@ucsd.edu](mailto:a4zhong@ucsd.edu)
+
+**LinkedIn:** [guanzong-zhong](https://www.linkedin.com/in/guanzong-zhong-58a4643a8/)
+
+**GitHub:** [rsm-a4zhong](https://github.com/rsm-a4zhong)
+
+I'm based in San Diego and open to conversations about analytics, experimentation, internships, and full-time opportunities starting late 2026.

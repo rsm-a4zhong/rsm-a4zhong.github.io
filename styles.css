@@ -1,0 +1,41 @@
+/* Subtle refinements over the cosmo theme */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  margin-top: 2.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+a {
+  color: #2C5F7F;
+}
+
+a:hover {
+  color: #1a3f56;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+/* Tighten up the about page */
+.about-entity .about-link {
+  margin-right: 0.5em;
+}
+
+/* Footer styling */
+.nav-footer {
+  border-top: 1px solid #eaeaea;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  color: #888;
+}

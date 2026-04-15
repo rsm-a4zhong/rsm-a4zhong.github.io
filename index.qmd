@@ -1,0 +1,36 @@
+---
+title: "Alex Zhong"
+image: files/profile.jpg
+about:
+  template: trestles
+  image-shape: round
+  image-width: 16em
+  links:
+    - icon: envelope
+      text: Email
+      href: mailto:a4zhong@ucsd.edu
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/guanzong-zhong-58a4643a8/
+    - icon: github
+      text: GitHub
+      href: https://github.com/rsm-a4zhong
+---
+
+I'm a Master's student in **Business Analytics** at UC San Diego's Rady School of Management, where I focus on experimentation, marketing analytics, and applied causal inference.
+
+Before Rady, I worked in investment management at two firms in Guangzhou and led a team during Citibank's summer analyst program. I hold a B.Sc. in Mathematics, Operational Research, Statistics and Economics (MORSE) from the University of Warwick.
+
+I'm interested in how data-driven decisions get made — and, more often, how they fail to. Most of what I write here is an attempt to think clearly about that, with code.
+
+## Background
+
+**Education**
+University of California, San Diego — MS Business Analytics (2025–2026)
+University of Warwick — B.Sc. MORSE
+
+**Languages**
+Mandarin (native) · Cantonese (fluent) · English (fluent, GRE 331)
+
+**Currently**
+Working on a supply chain & customer loyalty analytics capstone with Thermo Fisher Scientific.

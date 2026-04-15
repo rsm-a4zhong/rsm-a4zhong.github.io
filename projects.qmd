@@ -1,0 +1,38 @@
+---
+title: "Projects"
+---
+A selection of analytics and machine learning projects I've worked on at Rady and beyond.
+
+---
+
+### Customer Churn Prediction & Credit Card Offer Optimization
+
+*MGTA 455 — Machine Learning for Business Analytics, UCSD Rady · 2026*
+
+Built a predictive modeling pipeline to identify high-risk churn customers for a telecom provider (S-Mobile) and to optimize credit card offer targeting for a fintech (FiTech). Compared Logistic Regression, MLP, Random Forest, and XGBoost models, and translated model output into expected-profit rankings for marketing decisions.
+
+**Stack:** Python, scikit-learn, XGBoost, pandas
+
+---
+
+### Supply Chain & Customer Loyalty Analytics — Thermo Fisher Scientific
+
+*MSBA Capstone Project · 2026*
+
+Working with Thermo Fisher Scientific on an applied analytics capstone focused on supply chain forecasting and customer loyalty segmentation. The project combines transactional data analysis with predictive modeling to inform commercial strategy.
+
+**Stack:** Python, SQL, Tableau
+
+---
+
+### Market Microstructure Replication
+
+*Imperial College Group Project · 2025*
+
+Replicated a published academic paper on order book dynamics and liquidity imbalance, extending the original analysis to a new dataset. Implemented all empirical tests in Python and authored sections covering the theoretical setup and the liquidity-imbalance extension.
+
+**Stack:** Python, NumPy, statsmodels
+
+---
+
+*More projects forthcoming.*
