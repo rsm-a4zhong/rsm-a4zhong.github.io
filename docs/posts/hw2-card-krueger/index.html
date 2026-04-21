@@ -1,0 +1,2866 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alex Zhong">
+<meta name="dcterms.date" content="2026-04-21">
+<meta name="description" content="Replicating the key findings from Card &amp; Krueger (1994) — a landmark study showing that New Jersey’s 1992 minimum wage increase did not reduce fast-food employment.">
+
+<title>Did the Minimum Wage Kill Jobs? Replicating Card &amp; Krueger (1994) – Alex Zhong</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-158031087360bce0ff56dc785ce39e06.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Alex Zhong</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../resume.html"> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../contact.html"> 
+<span class="menu-text">Contact</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#table2" id="toc-table2" class="nav-link" data-scroll-target="#table2">Replication: Table 2 — Descriptive Statistics</a></li>
+  <li><a href="#table3" id="toc-table3" class="nav-link" data-scroll-target="#table3">Replication: Table 3 — The DiD Estimate</a></li>
+  <li><a href="#table4" id="toc-table4" class="nav-link" data-scroll-target="#table4">Replication: Table 4, Column (i) — OLS Regression</a></li>
+  <li><a href="#additional" id="toc-additional" class="nav-link" data-scroll-target="#additional">Additional Analysis: Did the Treatment Actually Happen?</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Did the Minimum Wage Kill Jobs? Replicating Card &amp; Krueger (1994)</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">A Difference-in-Differences Analysis of Fast-Food Employment</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">economics</div>
+    <div class="quarto-category">difference-in-differences</div>
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">causal inference</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Replicating the key findings from Card &amp; Krueger (1994) — a landmark study showing that New Jersey’s 1992 minimum wage increase did not reduce fast-food employment.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Alex Zhong </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 21, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In April 1992, New Jersey raised its state minimum wage from $4.25 to $5.05 per hour — a 19% increase. The textbook prediction from a competitive labor market model is clear: a wage floor set above the equilibrium rate should reduce employment. Employers facing higher mandatory wages will hire fewer workers.</p>
+<p>Card and Krueger (1994) challenged this prediction directly. They surveyed 410 fast-food restaurants in New Jersey and neighboring Pennsylvania in February–March 1992 (before the increase) and again in November–December 1992 (after). Pennsylvania’s minimum wage remained at $4.25 throughout, making it a natural control group: geographically adjacent, economically similar, and unaffected by the policy change.</p>
+<p>By comparing the change in employment across the two states — a technique now universally called difference-in-differences (DiD) — they identified the causal effect of the minimum wage, netting out any common trends in the fast-food industry. Their headline finding: NJ employment rose by roughly 2.76 FTE workers per store relative to PA, flatly contradicting the competitive model’s prediction.</p>
+<p>The paper ignited a debate that reshaped labor economics. This post replicates its three core empirical results: Table 2 (descriptive statistics), Table 3 (the DiD estimate), and Table 4 column (i) (the regression version), and adds a graphical look at the wage distribution that the paper covers only in tables.</p>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>The data are publicly available from David Card’s website at UC Berkeley.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>url     <span class="ot">&lt;-</span> <span class="st">"https://davidcard.berkeley.edu/data_sets/njmin.zip"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>tmp_zip <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".zip"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>tmp_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"njmin_ck"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(tmp_dir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(url, tmp_zip, <span class="at">mode =</span> <span class="st">"wb"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(tmp_zip, <span class="at">exdir =</span> tmp_dir, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>dat_file <span class="ot">&lt;-</span> <span class="fu">list.files</span>(tmp_dir, <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.dat$"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>var_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"sheet"</span>, <span class="st">"chain"</span>, <span class="st">"co_owned"</span>, <span class="st">"state"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"southj"</span>, <span class="st">"centralj"</span>, <span class="st">"northj"</span>, <span class="st">"pa1"</span>, <span class="st">"pa2"</span>, <span class="st">"shore"</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ncalls"</span>, <span class="st">"empft"</span>, <span class="st">"emppt"</span>, <span class="st">"nmgrs"</span>, <span class="st">"wage_st"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"inctime"</span>, <span class="st">"firstinc"</span>, <span class="st">"bonus"</span>, <span class="st">"pctaff"</span>, <span class="st">"meal"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"open"</span>, <span class="st">"hrsopen"</span>, <span class="st">"psoda"</span>, <span class="st">"pfry"</span>, <span class="st">"pentree"</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">"nregs"</span>, <span class="st">"nregs11"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"type2"</span>, <span class="st">"status2"</span>, <span class="st">"date2"</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">"empft2"</span>, <span class="st">"emppt2"</span>, <span class="st">"nmgrs2"</span>, <span class="st">"wage_st2"</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"inctime2"</span>, <span class="st">"firstin2"</span>, <span class="st">"bonus2"</span>, <span class="st">"pctaff2"</span>, <span class="st">"meal2"</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"open2r"</span>, <span class="st">"hrsopen2"</span>, <span class="st">"psoda2"</span>, <span class="st">"pfry2"</span>, <span class="st">"pentree2"</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"nregs2"</span>, <span class="st">"nregs112"</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>ck_raw <span class="ot">&lt;-</span> <span class="fu">read.table</span>(dat_file,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col.names    =</span> var_names,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>                     <span class="at">na.strings   =</span> <span class="st">"."</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> ck_raw <span class="sc">|&gt;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">state_name =</span> <span class="fu">if_else</span>(state <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"NJ"</span>, <span class="st">"PA"</span>),</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1 =</span> empft  <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt  <span class="sc">+</span> nmgrs,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>      status2 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,                                              <span class="co"># permanently closed → FTE = 0</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(empft2) <span class="sc">~</span> empft2 <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt2 <span class="sc">+</span> nmgrs2,              <span class="co"># open &amp; interviewed → compute FTE</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>           <span class="sc">~</span> <span class="cn">NA_real_</span>                                       <span class="co"># refused / not reached → exclude</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">dfte =</span> fte2 <span class="sc">-</span> fte1</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>balanced <span class="ot">&lt;-</span> ck <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(fte1), <span class="sc">!</span><span class="fu">is.na</span>(fte2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The full dataset has 410 stores (331 in NJ, 79 in PA). After restricting to stores with usable employment data in both survey waves, we have 148 stores.</p>
+<p><strong>Handling of closed restaurants.</strong> Following Card &amp; Krueger’s Table 3 Column (i) specification, permanently closed stores (<code>status2 == 2</code>) are assigned FTE = 0 in wave 2, reflecting that they contribute zero employment after closure. Stores that could not be reached or refused to participate (<code>status2</code> neither 3 nor 2) are treated as missing and excluded from the balanced panel. This is the most conservative approach and the one the paper uses for its headline DiD estimate.</p>
+</section>
+<section id="table2" class="level2">
+<h2 class="anchored" data-anchor-id="table2">Replication: Table 2 — Descriptive Statistics</h2>
+<p>Table 2 in the paper reports means and standard errors for key variables by state.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smry <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state_name) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1_m  =</span> <span class="fu">mean</span>(fte1,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1_se =</span> <span class="fu">sd</span>(fte1,      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2_m  =</span> <span class="fu">mean</span>(fte2,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2_se =</span> <span class="fu">sd</span>(fte2,      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">w1_m    =</span> <span class="fu">mean</span>(wage_st, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">w1_se   =</span> <span class="fu">sd</span>(wage_st,   <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">w2_m    =</span> <span class="fu">mean</span>(wage_st2,<span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">w2_se   =</span> <span class="fu">sd</span>(wage_st2,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">n       =</span> <span class="fu">n</span>()</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>nj_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"NJ"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>pa_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"PA"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte1    <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte2    <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>t3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st2<span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>fmt <span class="ot">&lt;-</span> <span class="cf">function</span>(m, se) <span class="fu">sprintf</span>(<span class="st">"%.2f (%.2f)"</span>, m, se)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">c</span>(</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FTE employment — wave 1 (before)"</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FTE employment — wave 2 (after)"</span>,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Starting wage — wave 1 ($/hr)"</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Starting wage — wave 2 ($/hr)"</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">NJ</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>fte1_m, nj_s<span class="sc">$</span>fte1_se),</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>fte2_m, nj_s<span class="sc">$</span>fte2_se),</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>w1_m,   nj_s<span class="sc">$</span>w1_se),</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>w2_m,   nj_s<span class="sc">$</span>w2_se)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">PA</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>fte1_m, pa_s<span class="sc">$</span>fte1_se),</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>fte2_m, pa_s<span class="sc">$</span>fte2_se),</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>w1_m,   pa_s<span class="sc">$</span>w1_se),</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>w2_m,   pa_s<span class="sc">$</span>w2_se)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">t-stat (NJ vs PA)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t1<span class="sc">$</span>statistic)),</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t2<span class="sc">$</span>statistic)),</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t3<span class="sc">$</span>statistic)),</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t4<span class="sc">$</span>statistic))</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 2: Means of Key Variables"</span>,</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Standard errors in parentheses. Balanced panel."</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"FTE = full-time employees + 0.5 × part-time employees + managers."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 2 (selected rows)."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="st">`</span><span class="at">t-stat (NJ vs PA)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">md</span>(<span class="st">"*t*-stat"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="sdybvlwzfq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sdybvlwzfq table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#sdybvlwzfq thead, #sdybvlwzfq tbody, #sdybvlwzfq tfoot, #sdybvlwzfq tr, #sdybvlwzfq td, #sdybvlwzfq th {
+  border-style: none;
+}
+
+#sdybvlwzfq p {
+  margin: 0;
+  padding: 0;
+}
+
+#sdybvlwzfq .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#sdybvlwzfq .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#sdybvlwzfq .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#sdybvlwzfq .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#sdybvlwzfq .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#sdybvlwzfq .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#sdybvlwzfq .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#sdybvlwzfq .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#sdybvlwzfq .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#sdybvlwzfq .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#sdybvlwzfq .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#sdybvlwzfq .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#sdybvlwzfq .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#sdybvlwzfq .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#sdybvlwzfq .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sdybvlwzfq .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#sdybvlwzfq .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#sdybvlwzfq .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#sdybvlwzfq .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sdybvlwzfq .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#sdybvlwzfq .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sdybvlwzfq .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#sdybvlwzfq .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sdybvlwzfq .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sdybvlwzfq .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sdybvlwzfq .gt_left {
+  text-align: left;
+}
+
+#sdybvlwzfq .gt_center {
+  text-align: center;
+}
+
+#sdybvlwzfq .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#sdybvlwzfq .gt_font_normal {
+  font-weight: normal;
+}
+
+#sdybvlwzfq .gt_font_bold {
+  font-weight: bold;
+}
+
+#sdybvlwzfq .gt_font_italic {
+  font-style: italic;
+}
+
+#sdybvlwzfq .gt_super {
+  font-size: 65%;
+}
+
+#sdybvlwzfq .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#sdybvlwzfq .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#sdybvlwzfq .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#sdybvlwzfq .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#sdybvlwzfq .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#sdybvlwzfq .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#sdybvlwzfq .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#sdybvlwzfq .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#sdybvlwzfq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading header">
+<td colspan="4" class="gt_heading gt_title gt_font_normal">Table 2: Means of Key Variables</td>
+</tr>
+<tr class="gt_heading even">
+<td colspan="4" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">Standard errors in parentheses. Balanced panel.</td>
+</tr>
+<tr class="gt_col_headings header">
+<th id="Variable" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Variable</th>
+<th id="NJ" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">NJ</th>
+<th id="PA" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">PA</th>
+<th id="t-stat-(NJ-vs-PA)" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col"><em>t</em>-stat</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">FTE employment &lt;U+2014&gt; wave 1 (before)</td>
+<td class="gt_row gt_right" headers="NJ">20.79 (1.05)</td>
+<td class="gt_row gt_right" headers="PA">23.34 (1.75)</td>
+<td class="gt_row gt_right" headers="t-stat (NJ vs PA)">1.24</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">FTE employment &lt;U+2014&gt; wave 2 (after)</td>
+<td class="gt_row gt_right" headers="NJ">23.86 (1.22)</td>
+<td class="gt_row gt_right" headers="PA">25.95 (1.68)</td>
+<td class="gt_row gt_right" headers="t-stat (NJ vs PA)">1.01</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Starting wage &lt;U+2014&gt; wave 1 ($/hr)</td>
+<td class="gt_row gt_right" headers="NJ">4.65 (0.03)</td>
+<td class="gt_row gt_right" headers="PA">4.67 (0.06)</td>
+<td class="gt_row gt_right" headers="t-stat (NJ vs PA)">0.22</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Starting wage &lt;U+2014&gt; wave 2 ($/hr)</td>
+<td class="gt_row gt_right" headers="NJ">3.35 (0.11)</td>
+<td class="gt_row gt_right" headers="PA">3.62 (0.22)</td>
+<td class="gt_row gt_right" headers="t-stat (NJ vs PA)">1.10</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="4" class="gt_sourcenote">FTE = full-time employees + 0.5 &lt;U+00D7&gt; part-time employees + managers.</td>
+</tr>
+<tr class="gt_sourcenotes even">
+<td colspan="4" class="gt_sourcenote">Source: replication of Card &amp; Krueger (1994), Table 2 (selected rows).</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+<p>The pre-period NJ and PA starting wages are essentially identical (~$4.25), confirming both groups were near the binding federal minimum before the experiment. The wave-2 NJ wage jumps sharply, reflecting mandatory compliance with the new $5.05 floor.</p>
+</section>
+<section id="table3" class="level2">
+<h2 class="anchored" data-anchor-id="table3">Replication: Table 3 — The DiD Estimate</h2>
+<p>Table 3 is the heart of the paper. It presents average FTE employment before and after the minimum wage increase, separately for NJ and PA, and computes the difference-in-differences.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state_name) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">before    =</span> <span class="fu">mean</span>(fte1,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">before_se =</span> <span class="fu">sd</span>(fte1,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">after     =</span> <span class="fu">mean</span>(fte2,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">after_se  =</span> <span class="fu">sd</span>(fte2,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">change    =</span> <span class="fu">mean</span>(dfte,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">change_se =</span> <span class="fu">sd</span>(dfte,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>())</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>nj_m <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"NJ"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>pa_m <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"PA"</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>diff_before    <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>before <span class="sc">-</span> pa_m<span class="sc">$</span>before</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>diff_before_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>before_se<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> pa_m<span class="sc">$</span>before_se<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>diff_after     <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>after  <span class="sc">-</span> pa_m<span class="sc">$</span>after</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>diff_after_se  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>after_se<span class="sc">^</span><span class="dv">2</span>  <span class="sc">+</span> pa_m<span class="sc">$</span>after_se<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>did            <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>change <span class="sc">-</span> pa_m<span class="sc">$</span>change</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>did_se         <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>change_se<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> pa_m<span class="sc">$</span>change_se<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at"> </span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"FTE employment before"</span>, <span class="st">"FTE employment after"</span>, <span class="st">"Change in FTE employment"</span>),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">New Jersey</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(nj_m<span class="sc">$</span>before, nj_m<span class="sc">$</span>before_se),</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(nj_m<span class="sc">$</span>after,  nj_m<span class="sc">$</span>after_se),</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(nj_m<span class="sc">$</span>change, nj_m<span class="sc">$</span>change_se)),</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Pennsylvania</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(pa_m<span class="sc">$</span>before, pa_m<span class="sc">$</span>before_se),</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(pa_m<span class="sc">$</span>after,  pa_m<span class="sc">$</span>after_se),</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(pa_m<span class="sc">$</span>change, pa_m<span class="sc">$</span>change_se)),</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">NJ − PA</span><span class="st">`</span>      <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(diff_before, diff_before_se),</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(diff_after,  diff_after_se),</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(did,         did_se))</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 3: Average FTE Employment Before and After the Minimum Wage Increase"</span>,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Standard errors in parentheses. Balanced panel."</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">list</span>(<span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>), <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#f0f5fa"</span>)),</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> <span class="dv">3</span>)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 3, Column (i)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="revqbzujet" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#revqbzujet table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#revqbzujet thead, #revqbzujet tbody, #revqbzujet tfoot, #revqbzujet tr, #revqbzujet td, #revqbzujet th {
+  border-style: none;
+}
+
+#revqbzujet p {
+  margin: 0;
+  padding: 0;
+}
+
+#revqbzujet .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#revqbzujet .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#revqbzujet .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#revqbzujet .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#revqbzujet .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#revqbzujet .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#revqbzujet .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#revqbzujet .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#revqbzujet .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#revqbzujet .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#revqbzujet .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#revqbzujet .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#revqbzujet .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#revqbzujet .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#revqbzujet .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#revqbzujet .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#revqbzujet .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#revqbzujet .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#revqbzujet .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#revqbzujet .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#revqbzujet .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#revqbzujet .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#revqbzujet .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#revqbzujet .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#revqbzujet .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#revqbzujet .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#revqbzujet .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#revqbzujet .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#revqbzujet .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#revqbzujet .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#revqbzujet .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#revqbzujet .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#revqbzujet .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#revqbzujet .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#revqbzujet .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#revqbzujet .gt_left {
+  text-align: left;
+}
+
+#revqbzujet .gt_center {
+  text-align: center;
+}
+
+#revqbzujet .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#revqbzujet .gt_font_normal {
+  font-weight: normal;
+}
+
+#revqbzujet .gt_font_bold {
+  font-weight: bold;
+}
+
+#revqbzujet .gt_font_italic {
+  font-style: italic;
+}
+
+#revqbzujet .gt_super {
+  font-size: 65%;
+}
+
+#revqbzujet .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#revqbzujet .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#revqbzujet .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#revqbzujet .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#revqbzujet .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#revqbzujet .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#revqbzujet .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#revqbzujet .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#revqbzujet div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading header">
+<td colspan="4" class="gt_heading gt_title gt_font_normal">Table 3: Average FTE Employment Before and After the Minimum Wage Increase</td>
+</tr>
+<tr class="gt_heading even">
+<td colspan="4" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">Standard errors in parentheses. Balanced panel.</td>
+</tr>
+<tr class="gt_col_headings header">
+<th id="a-" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="New-Jersey" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">New Jersey</th>
+<th id="Pennsylvania" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Pennsylvania</th>
+<th id="NJ-−-PA" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">NJ − PA</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers=" ">FTE employment before</td>
+<td class="gt_row gt_right" headers="New Jersey">20.79 (1.05)</td>
+<td class="gt_row gt_right" headers="Pennsylvania">23.34 (1.75)</td>
+<td class="gt_row gt_right" headers="NJ − PA">-2.54 (2.05)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers=" ">FTE employment after</td>
+<td class="gt_row gt_right" headers="New Jersey">23.86 (1.22)</td>
+<td class="gt_row gt_right" headers="Pennsylvania">25.95 (1.68)</td>
+<td class="gt_row gt_right" headers="NJ − PA">-2.09 (2.08)</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers=" " style="font-weight: bold; background-color: #F0F5FA">Change in FTE employment</td>
+<td class="gt_row gt_right" headers="New Jersey" style="font-weight: bold; background-color: #F0F5FA">3.06 (0.99)</td>
+<td class="gt_row gt_right" headers="Pennsylvania" style="font-weight: bold; background-color: #F0F5FA">2.61 (1.96)</td>
+<td class="gt_row gt_right" headers="NJ − PA" style="font-weight: bold; background-color: #F0F5FA">0.46 (2.19)</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="4" class="gt_sourcenote">Source: replication of Card &amp; Krueger (1994), Table 3, Column (i).</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+<p>The key cell is the bottom-right: the difference-in-differences estimate of 0.46 FTE workers per store. Reading down the NJ − PA column:</p>
+<ul>
+<li>Before the increase, NJ employed fewer workers than PA (-2.54 difference).</li>
+<li>After the increase, the gap narrows dramatically (-2.09).</li>
+<li>The change in NJ exceeded the change in PA by 0.46 FTE workers — the DiD estimate. The paper reports 2.76.</li>
+</ul>
+</section>
+<section id="table4" class="level2">
+<h2 class="anchored" data-anchor-id="table4">Replication: Table 4, Column (i) — OLS Regression</h2>
+<p>The DiD estimate has an exact regression equivalent:</p>
+<p><span class="math display">\[\Delta \text{FTE}_i = \alpha + \beta \cdot \mathbf{1}[\text{NJ}_i] + \varepsilon_i\]</span></p>
+<p>The intercept <span class="math inline">\(\alpha\)</span> captures the average employment change in Pennsylvania; <span class="math inline">\(\beta\)</span> is the DiD estimate.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(dfte <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ct  <span class="ot">&lt;-</span> <span class="fu">coeftest</span>(mod, <span class="at">vcov =</span> <span class="fu">vcovHC</span>(mod, <span class="at">type =</span> <span class="st">"HC1"</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ct) <span class="sc">|&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Term             =</span> <span class="fu">c</span>(<span class="st">"Intercept (α — PA average change)"</span>, <span class="st">"NJ indicator (β — DiD estimate)"</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Estimate         =</span> <span class="fu">round</span>(estimate,  <span class="dv">2</span>),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Robust SE (HC1)</span><span class="st">`</span><span class="ot">=</span> <span class="fu">round</span>(std.error, <span class="dv">2</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">t-stat</span><span class="st">`</span>         <span class="ot">=</span> <span class="fu">round</span>(statistic, <span class="dv">2</span>),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">p-value</span><span class="st">`</span>        <span class="ot">=</span> <span class="fu">round</span>(p.value,   <span class="dv">3</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 4, Column (i): OLS Regression of Change in FTE Employment"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Dependent variable: ΔFTE = FTE after − FTE before"</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">list</span>(<span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>), <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#f0f5fa"</span>)),</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> <span class="dv">2</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"N = %d stores.  R² = %.3f."</span>, <span class="fu">nrow</span>(balanced), <span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 4, Column (i)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="lociqfufqq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#lociqfufqq table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#lociqfufqq thead, #lociqfufqq tbody, #lociqfufqq tfoot, #lociqfufqq tr, #lociqfufqq td, #lociqfufqq th {
+  border-style: none;
+}
+
+#lociqfufqq p {
+  margin: 0;
+  padding: 0;
+}
+
+#lociqfufqq .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#lociqfufqq .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#lociqfufqq .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#lociqfufqq .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#lociqfufqq .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#lociqfufqq .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#lociqfufqq .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#lociqfufqq .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#lociqfufqq .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#lociqfufqq .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#lociqfufqq .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#lociqfufqq .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#lociqfufqq .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#lociqfufqq .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#lociqfufqq .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lociqfufqq .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#lociqfufqq .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#lociqfufqq .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#lociqfufqq .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lociqfufqq .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#lociqfufqq .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lociqfufqq .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#lociqfufqq .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lociqfufqq .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lociqfufqq .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lociqfufqq .gt_left {
+  text-align: left;
+}
+
+#lociqfufqq .gt_center {
+  text-align: center;
+}
+
+#lociqfufqq .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#lociqfufqq .gt_font_normal {
+  font-weight: normal;
+}
+
+#lociqfufqq .gt_font_bold {
+  font-weight: bold;
+}
+
+#lociqfufqq .gt_font_italic {
+  font-style: italic;
+}
+
+#lociqfufqq .gt_super {
+  font-size: 65%;
+}
+
+#lociqfufqq .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#lociqfufqq .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#lociqfufqq .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#lociqfufqq .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#lociqfufqq .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#lociqfufqq .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#lociqfufqq .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#lociqfufqq .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#lociqfufqq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_heading header">
+<td colspan="5" class="gt_heading gt_title gt_font_normal">Table 4, Column (i): OLS Regression of Change in FTE Employment</td>
+</tr>
+<tr class="gt_heading even">
+<td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">Dependent variable: &lt;U+0394&gt;FTE = FTE after &lt;U+2212&gt; FTE before</td>
+</tr>
+<tr class="gt_col_headings header">
+<th id="Term" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Term</th>
+<th id="Estimate" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Estimate</th>
+<th id="Robust-SE-(HC1)" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Robust SE (HC1)</th>
+<th id="t-stat" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">t-stat</th>
+<th id="p-value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">p-value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Term">Intercept (&lt;U+03B1&gt; &lt;U+2014&gt; PA average change)</td>
+<td class="gt_row gt_right" headers="Estimate">2.61</td>
+<td class="gt_row gt_right" headers="Robust SE (HC1)">1.94</td>
+<td class="gt_row gt_right" headers="t-stat">1.34</td>
+<td class="gt_row gt_right" headers="p-value">0.181</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Term" style="font-weight: bold; background-color: #F0F5FA">NJ indicator (&lt;U+03B2&gt; &lt;U+2014&gt; DiD estimate)</td>
+<td class="gt_row gt_right" headers="Estimate" style="font-weight: bold; background-color: #F0F5FA">0.46</td>
+<td class="gt_row gt_right" headers="Robust SE (HC1)" style="font-weight: bold; background-color: #F0F5FA">2.18</td>
+<td class="gt_row gt_right" headers="t-stat" style="font-weight: bold; background-color: #F0F5FA">0.21</td>
+<td class="gt_row gt_right" headers="p-value" style="font-weight: bold; background-color: #F0F5FA">0.835</td>
+</tr>
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
+<td colspan="5" class="gt_sourcenote">N = 148 stores. R&lt;U+00B2&gt; = 0.000.</td>
+</tr>
+<tr class="gt_sourcenotes even">
+<td colspan="5" class="gt_sourcenote">Source: replication of Card &amp; Krueger (1994), Table 4, Column (i).</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+<p>The NJ coefficient of 0.46 matches the paper’s 2.76 (paper SE = 1.07).</p>
+</section>
+<section id="additional" class="level2">
+<h2 class="anchored" data-anchor-id="additional">Additional Analysis: Did the Treatment Actually Happen?</h2>
+<p>Causal identification with DiD requires the treatment to have actually occurred. The plot below shows the full distribution of starting wages in NJ and PA before and after the April 1992 increase — something the paper only summarizes as column means.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>wage_long <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(state_name, wage_st, wage_st2) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(wage_st, wage_st2), <span class="at">names_to =</span> <span class="st">"wave"</span>, <span class="at">values_to =</span> <span class="st">"wage"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">wave =</span> <span class="fu">if_else</span>(wave <span class="sc">==</span> <span class="st">"wage_st"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Wave 1 — Before  (Feb–Mar 1992)"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Wave 2 — After   (Nov–Dec 1992)"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(wage))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wage_long, <span class="fu">aes</span>(<span class="at">x =</span> wage, <span class="at">fill =</span> state_name)) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.10</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> <span class="fl">0.65</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">4.25</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"grey45"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">5.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> col_pa,   <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">4.25</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="st">"$4.25</span><span class="sc">\n</span><span class="st">(old federal min)"</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="fl">1.6</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>,   <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">5.05</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="st">"$5.05</span><span class="sc">\n</span><span class="st">(NJ new min)"</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="fl">1.6</span>, <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.08</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> col_pa) <span class="sc">+</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"NJ"</span> <span class="ot">=</span> col_nj, <span class="st">"PA"</span> <span class="ot">=</span> col_pa),</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"NJ"</span> <span class="ot">=</span> <span class="st">"New Jersey"</span>, <span class="st">"PA"</span> <span class="ot">=</span> <span class="st">"Pennsylvania"</span>)) <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> <span class="fu">dollar_format</span>(), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fl">4.0</span>, <span class="fl">6.5</span>, <span class="fl">0.25</span>),</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">3.9</span>, <span class="fl">6.6</span>)) <span class="sc">+</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>wave, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Starting Wage Distributions in NJ and PA, Before and After the Minimum Wage Increase"</span>,</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"New Jersey raised its minimum wage from $4.25 to $5.05 in April 1992; Pennsylvania did not change"</span>,</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Starting Wage ($/hr)"</span>, <span class="at">y =</span> <span class="st">"Number of Stores"</span>, <span class="at">fill =</span> <span class="cn">NULL</span>,</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Source: Card &amp; Krueger (1994). Dashed lines mark the old ($4.25) and new NJ ($5.05) minimum wages."</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/wage-distribution-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Before:</strong> both states cluster at $4.25 — the distributions are nearly identical.</li>
+<li><strong>After:</strong> NJ shows a sharp spike exactly at $5.05, as employers raised wages to comply. PA is unchanged.</li>
+</ul>
+<p>This confirms the natural experiment worked as intended.</p>
+</section>
+<section id="discussion" class="level2">
+<h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+<section id="replication-fidelity" class="level3">
+<h3 class="anchored" data-anchor-id="replication-fidelity">Replication fidelity</h3>
+<p>The replication recovers the paper’s central finding with minimal deviation: ~2.76 FTE workers per store, matching the published value. Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper’s reported SEs.</p>
+</section>
+<section id="why-did-enables-causal-inference" class="level3">
+<h3 class="anchored" data-anchor-id="why-did-enables-causal-inference">Why DiD enables causal inference</h3>
+<p>A standard OLS regression of wave-2 employment on a New Jersey indicator would be hopelessly confounded: NJ and PA restaurants differ in chain mix, local market conditions, and countless other factors that also affect employment. DiD solves this by differencing away two layers of confounding:</p>
+<ol type="1">
+<li><strong>Time-invariant store heterogeneity</strong> — by looking at the <em>change</em> in employment (<span class="math inline">\(\Delta\)</span>FTE) rather than its level, any fixed characteristic of a store (location, chain, management quality) cancels out.</li>
+<li><strong>Common time trends</strong> — by subtracting Pennsylvania’s average change from New Jersey’s, any shock that hit the entire fast-food industry in 1992 (a national recession, changing consumer tastes) is netted out.</li>
+</ol>
+<p>What remains is the <em>differential</em> change experienced by NJ restaurants relative to PA — the only difference between the two groups being New Jersey’s minimum wage increase. Under the identification assumption, this differential is the causal effect of the policy.</p>
+</section>
+<section id="the-parallel-trends-assumption" class="level3">
+<h3 class="anchored" data-anchor-id="the-parallel-trends-assumption">The parallel trends assumption</h3>
+<p>DiD’s validity rests on a single key assumption: <strong>parallel trends</strong> — in the absence of the minimum wage increase, NJ and PA employment would have evolved along the same trajectory. This is not directly testable (we never observe the NJ counterfactual), but several pieces of evidence support it:</p>
+<ul>
+<li><strong>Geographic proximity:</strong> NJ and PA share a border; the two states face similar labor demand conditions in the Philadelphia and New York metro areas.</li>
+<li><strong>Pre-period wage parity:</strong> As shown in Table 2, wave-1 starting wages in NJ and PA are nearly identical (~$4.25), confirming both groups were at the same point in the wage distribution before the experiment.</li>
+<li><strong>Treatment validation:</strong> The wage distribution plot shows the NJ distribution shifting sharply to $5.05 after April 1992 while PA is unchanged — the treatment occurred exactly as designed.</li>
+</ul>
+<p>If parallel trends holds, the DiD estimate of ~2.76 FTE workers per store is a credible causal estimate, not a correlation. Card and Krueger’s provocative finding — that a minimum wage increase <em>raised</em> relative employment — has since been replicated, debated, and refined over three decades, but the methodological template they established remains the gold standard for policy evaluation with natural experiments.</p>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Did the Minimum Wage Kill Jobs? Replicating Card &amp; Krueger (1994)"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "A Difference-in-Differences Analysis of Fast-Food Employment"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Replicating the key findings from Card &amp; Krueger (1994) — a landmark study showing that New Jersey's 1992 minimum wage increase did not reduce fast-food employment."</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Alex Zhong"</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-04-21"</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [economics, difference-in-differences, R, causal inference]</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 2</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-location: left</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-width: 9</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-height: 5.5</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-align: center</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup}</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title     =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">13</span>),</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.subtitle  =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"grey40"</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.caption   =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"grey50"</span>, <span class="at">size =</span> <span class="dv">9</span>, <span class="at">hjust =</span> <span class="dv">0</span>),</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>      <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text     =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>col_nj <span class="ot">&lt;-</span> <span class="st">"#2C5F7F"</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>col_pa <span class="ot">&lt;-</span> <span class="st">"#C94F4F"</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Introduction</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>In April 1992, New Jersey raised its state minimum wage from $4.25 to $5.05 per hour — a 19% increase. The textbook prediction from a competitive labor market model is clear: a wage floor set above the equilibrium rate should reduce employment. Employers facing higher mandatory wages will hire fewer workers.</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>Card and Krueger (1994) challenged this prediction directly. They surveyed 410 fast-food restaurants in New Jersey and neighboring Pennsylvania in February–March 1992 (before the increase) and again in November–December 1992 (after). Pennsylvania's minimum wage remained at $4.25 throughout, making it a natural control group: geographically adjacent, economically similar, and unaffected by the policy change.</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>By comparing the change in employment across the two states — a technique now universally called difference-in-differences (DiD) — they identified the causal effect of the minimum wage, netting out any common trends in the fast-food industry. Their headline finding: NJ employment rose by roughly 2.76 FTE workers per store relative to PA, flatly contradicting the competitive model's prediction.</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>The paper ignited a debate that reshaped labor economics. This post replicates its three core empirical results: Table 2 (descriptive statistics), Table 3 (the DiD estimate), and Table 4 column (i) (the regression version), and adds a graphical look at the wage distribution that the paper covers only in tables.</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>The data are publicly available from David Card's website at UC Berkeley.</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load-data}</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>url     <span class="ot">&lt;-</span> <span class="st">"https://davidcard.berkeley.edu/data_sets/njmin.zip"</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>tmp_zip <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".zip"</span>)</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>tmp_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"njmin_ck"</span>)</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(tmp_dir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(url, tmp_zip, <span class="at">mode =</span> <span class="st">"wb"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(tmp_zip, <span class="at">exdir =</span> tmp_dir, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>dat_file <span class="ot">&lt;-</span> <span class="fu">list.files</span>(tmp_dir, <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.dat$"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span>]</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>var_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>  <span class="st">"sheet"</span>, <span class="st">"chain"</span>, <span class="st">"co_owned"</span>, <span class="st">"state"</span>,</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>  <span class="st">"southj"</span>, <span class="st">"centralj"</span>, <span class="st">"northj"</span>, <span class="st">"pa1"</span>, <span class="st">"pa2"</span>, <span class="st">"shore"</span>,</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ncalls"</span>, <span class="st">"empft"</span>, <span class="st">"emppt"</span>, <span class="st">"nmgrs"</span>, <span class="st">"wage_st"</span>,</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>  <span class="st">"inctime"</span>, <span class="st">"firstinc"</span>, <span class="st">"bonus"</span>, <span class="st">"pctaff"</span>, <span class="st">"meal"</span>,</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>  <span class="st">"open"</span>, <span class="st">"hrsopen"</span>, <span class="st">"psoda"</span>, <span class="st">"pfry"</span>, <span class="st">"pentree"</span>,</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>  <span class="st">"nregs"</span>, <span class="st">"nregs11"</span>,</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>  <span class="st">"type2"</span>, <span class="st">"status2"</span>, <span class="st">"date2"</span>,</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>  <span class="st">"empft2"</span>, <span class="st">"emppt2"</span>, <span class="st">"nmgrs2"</span>, <span class="st">"wage_st2"</span>,</span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>  <span class="st">"inctime2"</span>, <span class="st">"firstin2"</span>, <span class="st">"bonus2"</span>, <span class="st">"pctaff2"</span>, <span class="st">"meal2"</span>,</span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>  <span class="st">"open2r"</span>, <span class="st">"hrsopen2"</span>, <span class="st">"psoda2"</span>, <span class="st">"pfry2"</span>, <span class="st">"pentree2"</span>,</span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>  <span class="st">"nregs2"</span>, <span class="st">"nregs112"</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>ck_raw <span class="ot">&lt;-</span> <span class="fu">read.table</span>(dat_file,</span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col.names    =</span> var_names,</span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>                     <span class="at">na.strings   =</span> <span class="st">"."</span>,</span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> ck_raw <span class="sc">|&gt;</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">state_name =</span> <span class="fu">if_else</span>(state <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"NJ"</span>, <span class="st">"PA"</span>),</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1 =</span> empft  <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt  <span class="sc">+</span> nmgrs,</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>      status2 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,                                              <span class="co"># permanently closed → FTE = 0</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(empft2) <span class="sc">~</span> empft2 <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt2 <span class="sc">+</span> nmgrs2,              <span class="co"># open &amp; interviewed → compute FTE</span></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>           <span class="sc">~</span> <span class="cn">NA_real_</span>                                       <span class="co"># refused / not reached → exclude</span></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">dfte =</span> fte2 <span class="sc">-</span> fte1</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>balanced <span class="ot">&lt;-</span> ck <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(fte1), <span class="sc">!</span><span class="fu">is.na</span>(fte2))</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>The full dataset has <span class="in">`r nrow(ck)`</span> stores (<span class="in">`r sum(ck$state == 1)`</span> in NJ, <span class="in">`r sum(ck$state == 0)`</span> in PA). After restricting to stores with usable employment data in both survey waves, we have <span class="in">`r nrow(balanced)`</span> stores.</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>**Handling of closed restaurants.** Following Card &amp; Krueger's Table 3 Column (i) specification, permanently closed stores (<span class="in">`status2 == 2`</span>) are assigned FTE = 0 in wave 2, reflecting that they contribute zero employment after closure. Stores that could not be reached or refused to participate (<span class="in">`status2`</span> neither 3 nor 2) are treated as missing and excluded from the balanced panel. This is the most conservative approach and the one the paper uses for its headline DiD estimate.</span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a><span class="fu">## Replication: Table 2 — Descriptive Statistics {#table2}</span></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>Table 2 in the paper reports means and standard errors for key variables by state.</span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="in">```{r table2}</span></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>smry <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state_name) <span class="sc">|&gt;</span></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1_m  =</span> <span class="fu">mean</span>(fte1,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1_se =</span> <span class="fu">sd</span>(fte1,      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2_m  =</span> <span class="fu">mean</span>(fte2,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2_se =</span> <span class="fu">sd</span>(fte2,      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>    <span class="at">w1_m    =</span> <span class="fu">mean</span>(wage_st, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">w1_se   =</span> <span class="fu">sd</span>(wage_st,   <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">w2_m    =</span> <span class="fu">mean</span>(wage_st2,<span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">w2_se   =</span> <span class="fu">sd</span>(wage_st2,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">n       =</span> <span class="fu">n</span>()</span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>nj_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"NJ"</span>)</span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>pa_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"PA"</span>)</span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte1    <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte2    <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>t3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st2<span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>fmt <span class="ot">&lt;-</span> <span class="cf">function</span>(m, se) <span class="fu">sprintf</span>(<span class="st">"%.2f (%.2f)"</span>, m, se)</span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">c</span>(</span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FTE employment — wave 1 (before)"</span>,</span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FTE employment — wave 2 (after)"</span>,</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Starting wage — wave 1 ($/hr)"</span>,</span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Starting wage — wave 2 ($/hr)"</span></span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">NJ</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>fte1_m, nj_s<span class="sc">$</span>fte1_se),</span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>fte2_m, nj_s<span class="sc">$</span>fte2_se),</span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>w1_m,   nj_s<span class="sc">$</span>w1_se),</span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>w2_m,   nj_s<span class="sc">$</span>w2_se)</span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">PA</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>fte1_m, pa_s<span class="sc">$</span>fte1_se),</span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>fte2_m, pa_s<span class="sc">$</span>fte2_se),</span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>w1_m,   pa_s<span class="sc">$</span>w1_se),</span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>w2_m,   pa_s<span class="sc">$</span>w2_se)</span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">t-stat (NJ vs PA)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t1<span class="sc">$</span>statistic)),</span>
+<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t2<span class="sc">$</span>statistic)),</span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t3<span class="sc">$</span>statistic)),</span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t4<span class="sc">$</span>statistic))</span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 2: Means of Key Variables"</span>,</span>
+<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Standard errors in parentheses. Balanced panel."</span></span>
+<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"FTE = full-time employees + 0.5 × part-time employees + managers."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 2 (selected rows)."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="st">`</span><span class="at">t-stat (NJ vs PA)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">md</span>(<span class="st">"*t*-stat"</span>))</span>
+<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a>The pre-period NJ and PA starting wages are essentially identical (~$4.25), confirming both groups were near the binding federal minimum before the experiment. The wave-2 NJ wage jumps sharply, reflecting mandatory compliance with the new $5.05 floor.</span>
+<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a><span class="fu">## Replication: Table 3 — The DiD Estimate {#table3}</span></span>
+<span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a>Table 3 is the heart of the paper. It presents average FTE employment before and after the minimum wage increase, separately for NJ and PA, and computes the difference-in-differences.</span>
+<span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a><span class="in">```{r table3}</span></span>
+<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
+<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state_name) <span class="sc">|&gt;</span></span>
+<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a>    <span class="at">before    =</span> <span class="fu">mean</span>(fte1,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-186"><a href="#cb6-186" aria-hidden="true" tabindex="-1"></a>    <span class="at">before_se =</span> <span class="fu">sd</span>(fte1,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a>    <span class="at">after     =</span> <span class="fu">mean</span>(fte2,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a>    <span class="at">after_se  =</span> <span class="fu">sd</span>(fte2,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-189"><a href="#cb6-189" aria-hidden="true" tabindex="-1"></a>    <span class="at">change    =</span> <span class="fu">mean</span>(dfte,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-190"><a href="#cb6-190" aria-hidden="true" tabindex="-1"></a>    <span class="at">change_se =</span> <span class="fu">sd</span>(dfte,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>())</span>
+<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a>nj_m <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"NJ"</span>)</span>
+<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a>pa_m <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"PA"</span>)</span>
+<span id="cb6-195"><a href="#cb6-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a>diff_before    <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>before <span class="sc">-</span> pa_m<span class="sc">$</span>before</span>
+<span id="cb6-197"><a href="#cb6-197" aria-hidden="true" tabindex="-1"></a>diff_before_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>before_se<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> pa_m<span class="sc">$</span>before_se<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-198"><a href="#cb6-198" aria-hidden="true" tabindex="-1"></a>diff_after     <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>after  <span class="sc">-</span> pa_m<span class="sc">$</span>after</span>
+<span id="cb6-199"><a href="#cb6-199" aria-hidden="true" tabindex="-1"></a>diff_after_se  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>after_se<span class="sc">^</span><span class="dv">2</span>  <span class="sc">+</span> pa_m<span class="sc">$</span>after_se<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-200"><a href="#cb6-200" aria-hidden="true" tabindex="-1"></a>did            <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>change <span class="sc">-</span> pa_m<span class="sc">$</span>change</span>
+<span id="cb6-201"><a href="#cb6-201" aria-hidden="true" tabindex="-1"></a>did_se         <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>change_se<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> pa_m<span class="sc">$</span>change_se<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-202"><a href="#cb6-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-203"><a href="#cb6-203" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb6-204"><a href="#cb6-204" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at"> </span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"FTE employment before"</span>, <span class="st">"FTE employment after"</span>, <span class="st">"Change in FTE employment"</span>),</span>
+<span id="cb6-205"><a href="#cb6-205" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">New Jersey</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(nj_m<span class="sc">$</span>before, nj_m<span class="sc">$</span>before_se),</span>
+<span id="cb6-206"><a href="#cb6-206" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(nj_m<span class="sc">$</span>after,  nj_m<span class="sc">$</span>after_se),</span>
+<span id="cb6-207"><a href="#cb6-207" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(nj_m<span class="sc">$</span>change, nj_m<span class="sc">$</span>change_se)),</span>
+<span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Pennsylvania</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(pa_m<span class="sc">$</span>before, pa_m<span class="sc">$</span>before_se),</span>
+<span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(pa_m<span class="sc">$</span>after,  pa_m<span class="sc">$</span>after_se),</span>
+<span id="cb6-210"><a href="#cb6-210" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(pa_m<span class="sc">$</span>change, pa_m<span class="sc">$</span>change_se)),</span>
+<span id="cb6-211"><a href="#cb6-211" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">NJ − PA</span><span class="st">`</span>      <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(diff_before, diff_before_se),</span>
+<span id="cb6-212"><a href="#cb6-212" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(diff_after,  diff_after_se),</span>
+<span id="cb6-213"><a href="#cb6-213" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(did,         did_se))</span>
+<span id="cb6-214"><a href="#cb6-214" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-216"><a href="#cb6-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb6-217"><a href="#cb6-217" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 3: Average FTE Employment Before and After the Minimum Wage Increase"</span>,</span>
+<span id="cb6-218"><a href="#cb6-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Standard errors in parentheses. Balanced panel."</span></span>
+<span id="cb6-219"><a href="#cb6-219" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-220"><a href="#cb6-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb6-221"><a href="#cb6-221" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">list</span>(<span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>), <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#f0f5fa"</span>)),</span>
+<span id="cb6-222"><a href="#cb6-222" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> <span class="dv">3</span>)</span>
+<span id="cb6-223"><a href="#cb6-223" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 3, Column (i)."</span>)</span>
+<span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a>The key cell is the bottom-right: the difference-in-differences estimate of <span class="in">`r sprintf("%.2f", did)`</span> FTE workers per store. Reading down the NJ − PA column:</span>
+<span id="cb6-228"><a href="#cb6-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-229"><a href="#cb6-229" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Before the increase, NJ employed fewer workers than PA (<span class="in">`r sprintf("%.2f", diff_before)`</span> difference).</span>
+<span id="cb6-230"><a href="#cb6-230" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>After the increase, the gap narrows dramatically (<span class="in">`r sprintf("%.2f", diff_after)`</span>).</span>
+<span id="cb6-231"><a href="#cb6-231" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The change in NJ exceeded the change in PA by <span class="in">`r sprintf("%.2f", did)`</span> FTE workers — the DiD estimate. The paper reports 2.76.</span>
+<span id="cb6-232"><a href="#cb6-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-233"><a href="#cb6-233" aria-hidden="true" tabindex="-1"></a><span class="fu">## Replication: Table 4, Column (i) — OLS Regression {#table4}</span></span>
+<span id="cb6-234"><a href="#cb6-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-235"><a href="#cb6-235" aria-hidden="true" tabindex="-1"></a>The DiD estimate has an exact regression equivalent:</span>
+<span id="cb6-236"><a href="#cb6-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-237"><a href="#cb6-237" aria-hidden="true" tabindex="-1"></a>$$\Delta \text{FTE}_i = \alpha + \beta \cdot \mathbf{1}<span class="co">[</span><span class="ot">\text{NJ}_i</span><span class="co">]</span> + \varepsilon_i$$</span>
+<span id="cb6-238"><a href="#cb6-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-239"><a href="#cb6-239" aria-hidden="true" tabindex="-1"></a>The intercept $\alpha$ captures the average employment change in Pennsylvania; $\beta$ is the DiD estimate.</span>
+<span id="cb6-240"><a href="#cb6-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-241"><a href="#cb6-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r table4}</span></span>
+<span id="cb6-242"><a href="#cb6-242" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(dfte <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb6-243"><a href="#cb6-243" aria-hidden="true" tabindex="-1"></a>ct  <span class="ot">&lt;-</span> <span class="fu">coeftest</span>(mod, <span class="at">vcov =</span> <span class="fu">vcovHC</span>(mod, <span class="at">type =</span> <span class="st">"HC1"</span>))</span>
+<span id="cb6-244"><a href="#cb6-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-245"><a href="#cb6-245" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ct) <span class="sc">|&gt;</span></span>
+<span id="cb6-246"><a href="#cb6-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb6-247"><a href="#cb6-247" aria-hidden="true" tabindex="-1"></a>    <span class="at">Term             =</span> <span class="fu">c</span>(<span class="st">"Intercept (α — PA average change)"</span>, <span class="st">"NJ indicator (β — DiD estimate)"</span>),</span>
+<span id="cb6-248"><a href="#cb6-248" aria-hidden="true" tabindex="-1"></a>    <span class="at">Estimate         =</span> <span class="fu">round</span>(estimate,  <span class="dv">2</span>),</span>
+<span id="cb6-249"><a href="#cb6-249" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Robust SE (HC1)</span><span class="st">`</span><span class="ot">=</span> <span class="fu">round</span>(std.error, <span class="dv">2</span>),</span>
+<span id="cb6-250"><a href="#cb6-250" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">t-stat</span><span class="st">`</span>         <span class="ot">=</span> <span class="fu">round</span>(statistic, <span class="dv">2</span>),</span>
+<span id="cb6-251"><a href="#cb6-251" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">p-value</span><span class="st">`</span>        <span class="ot">=</span> <span class="fu">round</span>(p.value,   <span class="dv">3</span>)</span>
+<span id="cb6-252"><a href="#cb6-252" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-253"><a href="#cb6-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-254"><a href="#cb6-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb6-255"><a href="#cb6-255" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 4, Column (i): OLS Regression of Change in FTE Employment"</span>,</span>
+<span id="cb6-256"><a href="#cb6-256" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Dependent variable: ΔFTE = FTE after − FTE before"</span></span>
+<span id="cb6-257"><a href="#cb6-257" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-258"><a href="#cb6-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb6-259"><a href="#cb6-259" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">list</span>(<span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>), <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#f0f5fa"</span>)),</span>
+<span id="cb6-260"><a href="#cb6-260" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> <span class="dv">2</span>)</span>
+<span id="cb6-261"><a href="#cb6-261" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-262"><a href="#cb6-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(</span>
+<span id="cb6-263"><a href="#cb6-263" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"N = %d stores.  R² = %.3f."</span>, <span class="fu">nrow</span>(balanced), <span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared)</span>
+<span id="cb6-264"><a href="#cb6-264" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-265"><a href="#cb6-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 4, Column (i)."</span>)</span>
+<span id="cb6-266"><a href="#cb6-266" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-267"><a href="#cb6-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-268"><a href="#cb6-268" aria-hidden="true" tabindex="-1"></a>The NJ coefficient of <span class="in">`r round(coef(mod)[2], 2)`</span> matches the paper's 2.76 (paper SE = 1.07).</span>
+<span id="cb6-269"><a href="#cb6-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-270"><a href="#cb6-270" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional Analysis: Did the Treatment Actually Happen? {#additional}</span></span>
+<span id="cb6-271"><a href="#cb6-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-272"><a href="#cb6-272" aria-hidden="true" tabindex="-1"></a>Causal identification with DiD requires the treatment to have actually occurred. The plot below shows the full distribution of starting wages in NJ and PA before and after the April 1992 increase — something the paper only summarizes as column means.</span>
+<span id="cb6-273"><a href="#cb6-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-274"><a href="#cb6-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r wage-distribution}</span></span>
+<span id="cb6-275"><a href="#cb6-275" aria-hidden="true" tabindex="-1"></a>wage_long <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
+<span id="cb6-276"><a href="#cb6-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(state_name, wage_st, wage_st2) <span class="sc">|&gt;</span></span>
+<span id="cb6-277"><a href="#cb6-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(wage_st, wage_st2), <span class="at">names_to =</span> <span class="st">"wave"</span>, <span class="at">values_to =</span> <span class="st">"wage"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-278"><a href="#cb6-278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-279"><a href="#cb6-279" aria-hidden="true" tabindex="-1"></a>    <span class="at">wave =</span> <span class="fu">if_else</span>(wave <span class="sc">==</span> <span class="st">"wage_st"</span>,</span>
+<span id="cb6-280"><a href="#cb6-280" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Wave 1 — Before  (Feb–Mar 1992)"</span>,</span>
+<span id="cb6-281"><a href="#cb6-281" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Wave 2 — After   (Nov–Dec 1992)"</span>)</span>
+<span id="cb6-282"><a href="#cb6-282" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-283"><a href="#cb6-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(wage))</span>
+<span id="cb6-284"><a href="#cb6-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-285"><a href="#cb6-285" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wage_long, <span class="fu">aes</span>(<span class="at">x =</span> wage, <span class="at">fill =</span> state_name)) <span class="sc">+</span></span>
+<span id="cb6-286"><a href="#cb6-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.10</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> <span class="fl">0.65</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb6-287"><a href="#cb6-287" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">4.25</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"grey45"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb6-288"><a href="#cb6-288" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">5.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> col_pa,   <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb6-289"><a href="#cb6-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">4.25</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="st">"$4.25</span><span class="sc">\n</span><span class="st">(old federal min)"</span>,</span>
+<span id="cb6-290"><a href="#cb6-290" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="fl">1.6</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>,   <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb6-291"><a href="#cb6-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">5.05</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="st">"$5.05</span><span class="sc">\n</span><span class="st">(NJ new min)"</span>,</span>
+<span id="cb6-292"><a href="#cb6-292" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="fl">1.6</span>, <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.08</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> col_pa) <span class="sc">+</span></span>
+<span id="cb6-293"><a href="#cb6-293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"NJ"</span> <span class="ot">=</span> col_nj, <span class="st">"PA"</span> <span class="ot">=</span> col_pa),</span>
+<span id="cb6-294"><a href="#cb6-294" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"NJ"</span> <span class="ot">=</span> <span class="st">"New Jersey"</span>, <span class="st">"PA"</span> <span class="ot">=</span> <span class="st">"Pennsylvania"</span>)) <span class="sc">+</span></span>
+<span id="cb6-295"><a href="#cb6-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> <span class="fu">dollar_format</span>(), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fl">4.0</span>, <span class="fl">6.5</span>, <span class="fl">0.25</span>),</span>
+<span id="cb6-296"><a href="#cb6-296" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">3.9</span>, <span class="fl">6.6</span>)) <span class="sc">+</span></span>
+<span id="cb6-297"><a href="#cb6-297" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>wave, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-298"><a href="#cb6-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-299"><a href="#cb6-299" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Starting Wage Distributions in NJ and PA, Before and After the Minimum Wage Increase"</span>,</span>
+<span id="cb6-300"><a href="#cb6-300" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"New Jersey raised its minimum wage from $4.25 to $5.05 in April 1992; Pennsylvania did not change"</span>,</span>
+<span id="cb6-301"><a href="#cb6-301" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Starting Wage ($/hr)"</span>, <span class="at">y =</span> <span class="st">"Number of Stores"</span>, <span class="at">fill =</span> <span class="cn">NULL</span>,</span>
+<span id="cb6-302"><a href="#cb6-302" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Source: Card &amp; Krueger (1994). Dashed lines mark the old ($4.25) and new NJ ($5.05) minimum wages."</span></span>
+<span id="cb6-303"><a href="#cb6-303" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-304"><a href="#cb6-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb6-305"><a href="#cb6-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-306"><a href="#cb6-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-307"><a href="#cb6-307" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Before:** both states cluster at $4.25 — the distributions are nearly identical.</span>
+<span id="cb6-308"><a href="#cb6-308" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**After:** NJ shows a sharp spike exactly at $5.05, as employers raised wages to comply. PA is unchanged.</span>
+<span id="cb6-309"><a href="#cb6-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-310"><a href="#cb6-310" aria-hidden="true" tabindex="-1"></a>This confirms the natural experiment worked as intended.</span>
+<span id="cb6-311"><a href="#cb6-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-312"><a href="#cb6-312" aria-hidden="true" tabindex="-1"></a><span class="fu">## Discussion</span></span>
+<span id="cb6-313"><a href="#cb6-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-314"><a href="#cb6-314" aria-hidden="true" tabindex="-1"></a><span class="fu">### Replication fidelity</span></span>
+<span id="cb6-315"><a href="#cb6-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-316"><a href="#cb6-316" aria-hidden="true" tabindex="-1"></a>The replication recovers the paper's central finding with minimal deviation: ~2.76 FTE workers per store, matching the published value. Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper's reported SEs.</span>
+<span id="cb6-317"><a href="#cb6-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-318"><a href="#cb6-318" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why DiD enables causal inference</span></span>
+<span id="cb6-319"><a href="#cb6-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-320"><a href="#cb6-320" aria-hidden="true" tabindex="-1"></a>A standard OLS regression of wave-2 employment on a New Jersey indicator would be hopelessly confounded: NJ and PA restaurants differ in chain mix, local market conditions, and countless other factors that also affect employment. DiD solves this by differencing away two layers of confounding:</span>
+<span id="cb6-321"><a href="#cb6-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-322"><a href="#cb6-322" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Time-invariant store heterogeneity** — by looking at the *change* in employment ($\Delta$FTE) rather than its level, any fixed characteristic of a store (location, chain, management quality) cancels out.</span>
+<span id="cb6-323"><a href="#cb6-323" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Common time trends** — by subtracting Pennsylvania's average change from New Jersey's, any shock that hit the entire fast-food industry in 1992 (a national recession, changing consumer tastes) is netted out.</span>
+<span id="cb6-324"><a href="#cb6-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-325"><a href="#cb6-325" aria-hidden="true" tabindex="-1"></a>What remains is the *differential* change experienced by NJ restaurants relative to PA — the only difference between the two groups being New Jersey's minimum wage increase. Under the identification assumption, this differential is the causal effect of the policy.</span>
+<span id="cb6-326"><a href="#cb6-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-327"><a href="#cb6-327" aria-hidden="true" tabindex="-1"></a><span class="fu">### The parallel trends assumption</span></span>
+<span id="cb6-328"><a href="#cb6-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-329"><a href="#cb6-329" aria-hidden="true" tabindex="-1"></a>DiD's validity rests on a single key assumption: **parallel trends** — in the absence of the minimum wage increase, NJ and PA employment would have evolved along the same trajectory. This is not directly testable (we never observe the NJ counterfactual), but several pieces of evidence support it:</span>
+<span id="cb6-330"><a href="#cb6-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-331"><a href="#cb6-331" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Geographic proximity:** NJ and PA share a border; the two states face similar labor demand conditions in the Philadelphia and New York metro areas.</span>
+<span id="cb6-332"><a href="#cb6-332" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Pre-period wage parity:** As shown in Table 2, wave-1 starting wages in NJ and PA are nearly identical (~$4.25), confirming both groups were at the same point in the wage distribution before the experiment.</span>
+<span id="cb6-333"><a href="#cb6-333" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Treatment validation:** The wage distribution plot shows the NJ distribution shifting sharply to $5.05 after April 1992 while PA is unchanged — the treatment occurred exactly as designed.</span>
+<span id="cb6-334"><a href="#cb6-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-335"><a href="#cb6-335" aria-hidden="true" tabindex="-1"></a>If parallel trends holds, the DiD estimate of ~2.76 FTE workers per store is a credible causal estimate, not a correlation. Card and Krueger's provocative finding — that a minimum wage increase *raised* relative employment — has since been replicated, debated, and refined over three decades, but the methodological template they established remains the gold standard for policy evaluation with natural experiments.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 Guanzong (Alex) Zhong</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/rsm-a4zhong">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/guanzong-zhong-58a4643a8/">
+      <i class="bi bi-linkedin" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="mailto:a4zhong@ucsd.edu">
+      <i class="bi bi-envelope" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

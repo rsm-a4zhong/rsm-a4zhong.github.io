@@ -2,7 +2,15 @@
   {
     "listing": "/blog.html",
     "items": [
-      "/posts/hw1-ab-test/index.html"
+      "/posts/hw2-card-krueger/index.html",
+      "/posts/hw1-ab-test/index.html",
+      "/rsm-a4zhong.github.io/posts/hw1-ab-test/index.html"
+    ]
+  },
+  {
+    "listing": "/rsm-a4zhong.github.io/blog.html",
+    "items": [
+      "/rsm-a4zhong.github.io/posts/hw1-ab-test/index.html"
     ]
   }
 ]

@@ -93,9 +93,9 @@ ck <- ck_raw |>
     state_name = if_else(state == 1, "NJ", "PA"),
     fte1 = empft  + 0.5 * emppt  + nmgrs,
     fte2 = case_when(
-      status2 == 2 ~ 0,
-      status2 == 3 ~ empft2 + 0.5 * emppt2 + nmgrs2,
-      TRUE         ~ NA_real_
+      status2 == 2 ~ 0,                                              # permanently closed → FTE = 0
+      !is.na(empft2) ~ empft2 + 0.5 * emppt2 + nmgrs2,              # open & interviewed → compute FTE
+      TRUE           ~ NA_real_                                       # refused / not reached → exclude
     ),
     dfte = fte2 - fte1
   )
