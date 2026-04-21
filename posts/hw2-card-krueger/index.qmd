@@ -91,10 +91,10 @@ ck <- ck_raw |>
   as_tibble() |>
   mutate(
     state_name = if_else(state == 1, "NJ", "PA"),
-    fte1 = empft  + 0.5 * emppt  + nmgrs,
+    fte1 = replace_na(empft, 0) + 0.5 * replace_na(emppt, 0) + replace_na(nmgrs, 0),
     fte2 = case_when(
       status2 %in% c(2, 3) ~ 0,                             # closed/renovating → FTE = 0
-      !is.na(empft2)        ~ empft2 + 0.5 * emppt2 + nmgrs2, # open & interviewed → compute FTE
+      !is.na(empft2)        ~ replace_na(empft2, 0) + 0.5 * replace_na(emppt2, 0) + replace_na(nmgrs2, 0), # open & interviewed → compute FTE
       TRUE                  ~ NA_real_                        # refused / not reached → exclude
     ),,
     dfte = fte2 - fte1
@@ -184,7 +184,7 @@ m <- balanced |>
   summarise(
     before    = mean(fte1,  na.rm = TRUE),
     before_se = sd(fte1,    na.rm = TRUE) / sqrt(n()),
-    after     = mean(fte2,  na.rm = TRUE),
+    after     = mean(fte2,  na.rm = TRUE)
     after_se  = sd(fte2,    na.rm = TRUE) / sqrt(n()),
     change    = mean(dfte,  na.rm = TRUE),
     change_se = sd(dfte,    na.rm = TRUE) / sqrt(n())
@@ -224,11 +224,11 @@ tibble(
   tab_source_note("Source: replication of Card & Krueger (1994), Table 3, Column (i).")
 ```
 
-The key cell is the bottom-right: the difference-in-differences estimate of `r sprintf("%.2f", did)` FTE workers per store. Reading down the NJ − PA column:
+The key cell is the bottom-right: the difference-in-differences estimate of `r sprintf("%.2f", did)` FTE workers per store (paper: 2.76). Reading down the NJ − PA column:
 
 - Before the increase, NJ employed fewer workers than PA (`r sprintf("%.2f", diff_before)` difference).
 - After the increase, the gap narrows dramatically (`r sprintf("%.2f", diff_after)`).
-- The change in NJ exceeded the change in PA by `r sprintf("%.2f", did)` FTE workers — the DiD estimate..
+- The change in NJ exceeded the change in PA by `r sprintf("%.2f", did)` FTE workers — the DiD estimate (paper: 2.76).
 
 ## Replication: Table 4, Column (i) — OLS Regression {#table4}
 
@@ -313,7 +313,7 @@ This confirms the natural experiment worked as intended.
 
 ### Replication fidelity
 
-The replication recovers the paper's central finding closely: the DiD estimate matches the published 2.76 FTE workers per store. Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper's reported SEs.
+The replication recovers the paper's central finding: the DiD estimate is `r sprintf("%.2f", did)` FTE workers per store (paper: 2.76). Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper's reported SEs.
 
 ### Why DiD enables causal inference
 
@@ -332,4 +332,4 @@ DiD's validity rests on a single key assumption: **parallel trends** — in the 
 - **Pre-period wage parity:** As shown in Table 2, wave-1 starting wages in NJ and PA are nearly identical (~$4.25), confirming both groups were at the same point in the wage distribution before the experiment.
 - **Treatment validation:** The wage distribution plot shows the NJ distribution shifting sharply to $5.05 after April 1992 while PA is unchanged — the treatment occurred exactly as designed.
 
-If parallel trends holds, the DiD estimate of ~2.76 FTE workers per store is a credible causal estimate, not a correlation. Card and Krueger's provocative finding — that a minimum wage increase *raised* relative employment — has since been replicated, debated, and refined over three decades, but the methodological template they established remains the gold standard for policy evaluation with natural experiments.
+If parallel trends holds, the DiD estimate of `r sprintf("%.2f", did)` FTE workers per store (paper: 2.76) is a credible causal estimate, not a correlation. Card and Krueger's provocative finding — that a minimum wage increase *raised* relative employment — has since been replicated, debated, and refined over three decades, but the methodological template they established remains the gold standard for policy evaluation with natural experiments.
