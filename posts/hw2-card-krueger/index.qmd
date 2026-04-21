@@ -105,6 +105,8 @@ balanced <- ck |> filter(!is.na(fte1), !is.na(fte2))
 
 The full dataset has `r nrow(ck)` stores (`r sum(ck$state == 1)` in NJ, `r sum(ck$state == 0)` in PA). After restricting to stores with usable employment data in both survey waves, we have `r nrow(balanced)` stores.
 
+**Handling of closed restaurants.** Following Card & Krueger's Table 3 Column (i) specification, permanently closed stores (`status2 == 2`) are assigned FTE = 0 in wave 2, reflecting that they contribute zero employment after closure. Stores that could not be reached or refused to participate (`status2` neither 3 nor 2) are treated as missing and excluded from the balanced panel. This is the most conservative approach and the one the paper uses for its headline DiD estimate.
+
 ## Replication: Table 2 — Descriptive Statistics {#table2}
 
 Table 2 in the paper reports means and standard errors for key variables by state.
@@ -309,8 +311,25 @@ This confirms the natural experiment worked as intended.
 
 ## Discussion
 
-The replication recovers the paper's central finding with minimal deviation: ~2.76 FTE workers per store, matching the published value.
+### Replication fidelity
 
-Minor discrepancies arise from sample definition (the paper has multiple cuts) and standard error choices. HC1 robust SEs are used throughout, as in the paper.
+The replication recovers the paper's central finding with minimal deviation: ~2.76 FTE workers per store, matching the published value. Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper's reported SEs.
 
-The deeper lesson is methodological. By exploiting New Jersey's minimum wage increase as a natural experiment, Card and Krueger achieved credible causal identification: DiD nets out time-invariant store differences and common industry trends, leaving only the differential change attributable to the policy. The wage distribution plot validates the key prerequisite — the treatment actually occurred — completing the causal argument.
+### Why DiD enables causal inference
+
+A standard OLS regression of wave-2 employment on a New Jersey indicator would be hopelessly confounded: NJ and PA restaurants differ in chain mix, local market conditions, and countless other factors that also affect employment. DiD solves this by differencing away two layers of confounding:
+
+1. **Time-invariant store heterogeneity** — by looking at the *change* in employment ($\Delta$FTE) rather than its level, any fixed characteristic of a store (location, chain, management quality) cancels out.
+2. **Common time trends** — by subtracting Pennsylvania's average change from New Jersey's, any shock that hit the entire fast-food industry in 1992 (a national recession, changing consumer tastes) is netted out.
+
+What remains is the *differential* change experienced by NJ restaurants relative to PA — the only difference between the two groups being New Jersey's minimum wage increase. Under the identification assumption, this differential is the causal effect of the policy.
+
+### The parallel trends assumption
+
+DiD's validity rests on a single key assumption: **parallel trends** — in the absence of the minimum wage increase, NJ and PA employment would have evolved along the same trajectory. This is not directly testable (we never observe the NJ counterfactual), but several pieces of evidence support it:
+
+- **Geographic proximity:** NJ and PA share a border; the two states face similar labor demand conditions in the Philadelphia and New York metro areas.
+- **Pre-period wage parity:** As shown in Table 2, wave-1 starting wages in NJ and PA are nearly identical (~$4.25), confirming both groups were at the same point in the wage distribution before the experiment.
+- **Treatment validation:** The wage distribution plot shows the NJ distribution shifting sharply to $5.05 after April 1992 while PA is unchanged — the treatment occurred exactly as designed.
+
+If parallel trends holds, the DiD estimate of ~2.76 FTE workers per store is a credible causal estimate, not a correlation. Card and Krueger's provocative finding — that a minimum wage increase *raised* relative employment — has since been replicated, debated, and refined over three decades, but the methodological template they established remains the gold standard for policy evaluation with natural experiments.
