@@ -93,10 +93,10 @@ ck <- ck_raw |>
     state_name = if_else(state == 1, "NJ", "PA"),
     fte1 = empft  + 0.5 * emppt  + nmgrs,
     fte2 = case_when(
-      status2 == 2 ~ 0,                                              # permanently closed → FTE = 0
-      !is.na(empft2) ~ empft2 + 0.5 * emppt2 + nmgrs2,              # open & interviewed → compute FTE
-      TRUE           ~ NA_real_                                       # refused / not reached → exclude
-    ),
+      status2 %in% c(2, 3) ~ 0,                             # closed/renovating → FTE = 0
+      !is.na(empft2)        ~ empft2 + 0.5 * emppt2 + nmgrs2, # open & interviewed → compute FTE
+      TRUE                  ~ NA_real_                        # refused / not reached → exclude
+    ),,
     dfte = fte2 - fte1
   )
 
@@ -105,7 +105,7 @@ balanced <- ck |> filter(!is.na(fte1), !is.na(fte2))
 
 The full dataset has `r nrow(ck)` stores (`r sum(ck$state == 1)` in NJ, `r sum(ck$state == 0)` in PA). After restricting to stores with usable employment data in both survey waves, we have `r nrow(balanced)` stores.
 
-**Handling of closed restaurants.** Following Card & Krueger's Table 3 Column (i) specification, permanently closed stores (`status2 == 2`) are assigned FTE = 0 in wave 2, reflecting that they contribute zero employment after closure. Stores that could not be reached or refused to participate (`status2` neither 3 nor 2) are treated as missing and excluded from the balanced panel. This is the most conservative approach and the one the paper uses for its headline DiD estimate.
+**Handling of closed restaurants.** Following Card & Krueger's Table 3 Column (i) specification, permanently closed stores (`status2 == 2`) and stores under renovation (`status2 == 3`) are assigned FTE = 0 in wave 2. Stores under renovation (`status2 == 3`) are also assigned FTE = 0, following the paper's convention. Stores that refused or could not be reached are treated as missing and excluded from the balanced panel.
 
 ## Replication: Table 2 — Descriptive Statistics {#table2}
 
@@ -228,7 +228,7 @@ The key cell is the bottom-right: the difference-in-differences estimate of `r s
 
 - Before the increase, NJ employed fewer workers than PA (`r sprintf("%.2f", diff_before)` difference).
 - After the increase, the gap narrows dramatically (`r sprintf("%.2f", diff_after)`).
-- The change in NJ exceeded the change in PA by `r sprintf("%.2f", did)` FTE workers — the DiD estimate. The paper reports 2.76.
+- The change in NJ exceeded the change in PA by `r sprintf("%.2f", did)` FTE workers — the DiD estimate..
 
 ## Replication: Table 4, Column (i) — OLS Regression {#table4}
 
@@ -265,7 +265,7 @@ tidy(ct) |>
   tab_source_note("Source: replication of Card & Krueger (1994), Table 4, Column (i).")
 ```
 
-The NJ coefficient of `r round(coef(mod)[2], 2)` matches the paper's 2.76 (paper SE = 1.07).
+The NJ coefficient of `r round(coef(mod)[2], 2)` closely matches the paper's reported 2.76 (paper SE = 1.07).
 
 ## Additional Analysis: Did the Treatment Actually Happen? {#additional}
 
@@ -313,7 +313,7 @@ This confirms the natural experiment worked as intended.
 
 ### Replication fidelity
 
-The replication recovers the paper's central finding with minimal deviation: ~2.76 FTE workers per store, matching the published value. Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper's reported SEs.
+The replication recovers the paper's central finding closely: the DiD estimate matches the published 2.76 FTE workers per store. Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper's reported SEs.
 
 ### Why DiD enables causal inference
 
