@@ -289,28 +289,31 @@ window.Quarto = {
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"nregs2"</span>, <span class="st">"nregs112"</span></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>ck_raw <span class="ot">&lt;-</span> <span class="fu">read.table</span>(dat_file,</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col.names    =</span> var_names,</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>                     <span class="at">na.strings   =</span> <span class="st">"."</span>,</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> ck_raw <span class="sc">|&gt;</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">state_name =</span> <span class="fu">if_else</span>(state <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"NJ"</span>, <span class="st">"PA"</span>),</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1 =</span> empft  <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt  <span class="sc">+</span> nmgrs,</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>      status2 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,                                              <span class="co"># permanently closed → FTE = 0</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(empft2) <span class="sc">~</span> empft2 <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt2 <span class="sc">+</span> nmgrs2,              <span class="co"># open &amp; interviewed → compute FTE</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>           <span class="sc">~</span> <span class="cn">NA_real_</span>                                       <span class="co"># refused / not reached → exclude</span></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">dfte =</span> fte2 <span class="sc">-</span> fte1</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>balanced <span class="ot">&lt;-</span> ck <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(fte1), <span class="sc">!</span><span class="fu">is.na</span>(fte2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>ck_raw <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_table</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  dat_file,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> var_names,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> readr<span class="sc">::</span><span class="fu">cols</span>(<span class="at">.default =</span> readr<span class="sc">::</span><span class="fu">col_double</span>()),</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">na        =</span> <span class="fu">c</span>(<span class="st">"."</span>, <span class="st">""</span>),</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> ck_raw <span class="sc">|&gt;</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">state_name =</span> <span class="fu">if_else</span>(state <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"NJ"</span>, <span class="st">"PA"</span>),</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1 =</span> empft <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt <span class="sc">+</span> nmgrs,</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>      status2 <span class="sc">==</span> <span class="dv">2</span>           <span class="sc">~</span> <span class="dv">0</span>,                           <span class="co"># permanently closed → FTE = 0</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(empft2)         <span class="sc">~</span> empft2 <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt2 <span class="sc">+</span> nmgrs2, <span class="co"># open &amp; interviewed → compute FTE</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                   <span class="sc">~</span> <span class="cn">NA_real_</span>                         <span class="co"># refused / not reached → exclude</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    ),,</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">dfte =</span> fte2 <span class="sc">-</span> fte1</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>balanced <span class="ot">&lt;-</span> ck <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(fte1), <span class="sc">!</span><span class="fu">is.na</span>(fte2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The full dataset has 410 stores (331 in NJ, 79 in PA). After restricting to stores with usable employment data in both survey waves, we have 148 stores.</p>
-<p><strong>Handling of closed restaurants.</strong> Following Card &amp; Krueger’s Table 3 Column (i) specification, permanently closed stores (<code>status2 == 2</code>) are assigned FTE = 0 in wave 2, reflecting that they contribute zero employment after closure. Stores that could not be reached or refused to participate (<code>status2</code> neither 3 nor 2) are treated as missing and excluded from the balanced panel. This is the most conservative approach and the one the paper uses for its headline DiD estimate.</p>
+<p><strong>Handling of closed restaurants.</strong> Following Card &amp; Krueger’s Table 3 Column (i) specification, permanently closed stores (<code>status2 == 2</code>) and stores under renovation (<code>status2 == 3</code>) are assigned FTE = 0 in wave 2. Stores under renovation (<code>status2 == 3</code>) are also assigned FTE = 0, following the paper’s convention. Stores that refused or could not be reached are treated as missing and excluded from the balanced panel.</p>
 </section>
 <section id="table2" class="level2">
 <h2 class="anchored" data-anchor-id="table2">Replication: Table 2 — Descriptive Statistics</h2>
@@ -333,10 +336,10 @@ window.Quarto = {
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>nj_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"NJ"</span>)</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>pa_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"PA"</span>)</span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte1    <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte2    <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>t3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st2<span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte1    <span class="sc">~</span> state_name, <span class="at">data =</span> balanced)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte2    <span class="sc">~</span> state_name, <span class="at">data =</span> balanced)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>t3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st <span class="sc">~</span> state_name, <span class="at">data =</span> balanced)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st2<span class="sc">~</span> state_name, <span class="at">data =</span> balanced)</span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>fmt <span class="ot">&lt;-</span> <span class="cf">function</span>(m, se) <span class="fu">sprintf</span>(<span class="st">"%.2f (%.2f)"</span>, m, se)</span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
@@ -375,23 +378,23 @@ window.Quarto = {
 <span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 2 (selected rows)."</span>) <span class="sc">|&gt;</span></span>
 <span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="st">`</span><span class="at">t-stat (NJ vs PA)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">md</span>(<span class="st">"*t*-stat"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="sdybvlwzfq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#sdybvlwzfq table {
+<div id="wizrcphcci" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#wizrcphcci table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#sdybvlwzfq thead, #sdybvlwzfq tbody, #sdybvlwzfq tfoot, #sdybvlwzfq tr, #sdybvlwzfq td, #sdybvlwzfq th {
+#wizrcphcci thead, #wizrcphcci tbody, #wizrcphcci tfoot, #wizrcphcci tr, #wizrcphcci td, #wizrcphcci th {
   border-style: none;
 }
 
-#sdybvlwzfq p {
+#wizrcphcci p {
   margin: 0;
   padding: 0;
 }
 
-#sdybvlwzfq .gt_table {
+#wizrcphcci .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -417,12 +420,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_caption {
+#wizrcphcci .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#sdybvlwzfq .gt_title {
+#wizrcphcci .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -434,7 +437,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#sdybvlwzfq .gt_subtitle {
+#wizrcphcci .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -446,7 +449,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#sdybvlwzfq .gt_heading {
+#wizrcphcci .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -458,13 +461,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_bottom_border {
+#wizrcphcci .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_col_headings {
+#wizrcphcci .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -479,7 +482,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_col_heading {
+#wizrcphcci .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -499,7 +502,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#sdybvlwzfq .gt_column_spanner_outer {
+#wizrcphcci .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -511,15 +514,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#sdybvlwzfq .gt_column_spanner_outer:first-child {
+#wizrcphcci .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#sdybvlwzfq .gt_column_spanner_outer:last-child {
+#wizrcphcci .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#sdybvlwzfq .gt_column_spanner {
+#wizrcphcci .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -531,11 +534,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#sdybvlwzfq .gt_spanner_row {
+#wizrcphcci .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#sdybvlwzfq .gt_group_heading {
+#wizrcphcci .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -561,7 +564,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#sdybvlwzfq .gt_empty_group_heading {
+#wizrcphcci .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -576,15 +579,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#sdybvlwzfq .gt_from_md > :first-child {
+#wizrcphcci .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#sdybvlwzfq .gt_from_md > :last-child {
+#wizrcphcci .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#sdybvlwzfq .gt_row {
+#wizrcphcci .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -603,7 +606,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#sdybvlwzfq .gt_stub {
+#wizrcphcci .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -616,7 +619,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#sdybvlwzfq .gt_stub_row_group {
+#wizrcphcci .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -630,15 +633,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#sdybvlwzfq .gt_row_group_first td {
+#wizrcphcci .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#sdybvlwzfq .gt_row_group_first th {
+#wizrcphcci .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#sdybvlwzfq .gt_summary_row {
+#wizrcphcci .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -648,16 +651,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#sdybvlwzfq .gt_first_summary_row {
+#wizrcphcci .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_first_summary_row.thick {
+#wizrcphcci .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#sdybvlwzfq .gt_last_summary_row {
+#wizrcphcci .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -667,7 +670,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_grand_summary_row {
+#wizrcphcci .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -677,7 +680,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#sdybvlwzfq .gt_first_grand_summary_row {
+#wizrcphcci .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -687,7 +690,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_last_grand_summary_row_top {
+#wizrcphcci .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -697,11 +700,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_striped {
+#wizrcphcci .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#sdybvlwzfq .gt_table_body {
+#wizrcphcci .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -710,7 +713,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_footnotes {
+#wizrcphcci .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -724,7 +727,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_footnote {
+#wizrcphcci .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -733,7 +736,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#sdybvlwzfq .gt_sourcenotes {
+#wizrcphcci .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -747,7 +750,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#sdybvlwzfq .gt_sourcenote {
+#wizrcphcci .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -755,72 +758,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#sdybvlwzfq .gt_left {
+#wizrcphcci .gt_left {
   text-align: left;
 }
 
-#sdybvlwzfq .gt_center {
+#wizrcphcci .gt_center {
   text-align: center;
 }
 
-#sdybvlwzfq .gt_right {
+#wizrcphcci .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#sdybvlwzfq .gt_font_normal {
+#wizrcphcci .gt_font_normal {
   font-weight: normal;
 }
 
-#sdybvlwzfq .gt_font_bold {
+#wizrcphcci .gt_font_bold {
   font-weight: bold;
 }
 
-#sdybvlwzfq .gt_font_italic {
+#wizrcphcci .gt_font_italic {
   font-style: italic;
 }
 
-#sdybvlwzfq .gt_super {
+#wizrcphcci .gt_super {
   font-size: 65%;
 }
 
-#sdybvlwzfq .gt_footnote_marks {
+#wizrcphcci .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#sdybvlwzfq .gt_asterisk {
+#wizrcphcci .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#sdybvlwzfq .gt_indent_1 {
+#wizrcphcci .gt_indent_1 {
   text-indent: 5px;
 }
 
-#sdybvlwzfq .gt_indent_2 {
+#wizrcphcci .gt_indent_2 {
   text-indent: 10px;
 }
 
-#sdybvlwzfq .gt_indent_3 {
+#wizrcphcci .gt_indent_3 {
   text-indent: 15px;
 }
 
-#sdybvlwzfq .gt_indent_4 {
+#wizrcphcci .gt_indent_4 {
   text-indent: 20px;
 }
 
-#sdybvlwzfq .gt_indent_5 {
+#wizrcphcci .gt_indent_5 {
   text-indent: 25px;
 }
 
-#sdybvlwzfq .katex-display {
+#wizrcphcci .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#sdybvlwzfq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#wizrcphcci div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -842,32 +845,32 @@ window.Quarto = {
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="Variable">FTE employment &lt;U+2014&gt; wave 1 (before)</td>
+<td class="gt_row gt_left" headers="Variable">FTE employment — wave 1 (before)</td>
 <td class="gt_row gt_right" headers="NJ">20.79 (1.05)</td>
 <td class="gt_row gt_right" headers="PA">23.34 (1.75)</td>
 <td class="gt_row gt_right" headers="t-stat (NJ vs PA)">1.24</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Variable">FTE employment &lt;U+2014&gt; wave 2 (after)</td>
+<td class="gt_row gt_left" headers="Variable">FTE employment — wave 2 (after)</td>
 <td class="gt_row gt_right" headers="NJ">23.86 (1.22)</td>
 <td class="gt_row gt_right" headers="PA">25.95 (1.68)</td>
 <td class="gt_row gt_right" headers="t-stat (NJ vs PA)">1.01</td>
 </tr>
 <tr class="odd">
-<td class="gt_row gt_left" headers="Variable">Starting wage &lt;U+2014&gt; wave 1 ($/hr)</td>
+<td class="gt_row gt_left" headers="Variable">Starting wage — wave 1 ($/hr)</td>
 <td class="gt_row gt_right" headers="NJ">4.65 (0.03)</td>
 <td class="gt_row gt_right" headers="PA">4.67 (0.06)</td>
 <td class="gt_row gt_right" headers="t-stat (NJ vs PA)">0.22</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Variable">Starting wage &lt;U+2014&gt; wave 2 ($/hr)</td>
+<td class="gt_row gt_left" headers="Variable">Starting wage — wave 2 ($/hr)</td>
 <td class="gt_row gt_right" headers="NJ">3.35 (0.11)</td>
 <td class="gt_row gt_right" headers="PA">3.62 (0.22)</td>
 <td class="gt_row gt_right" headers="t-stat (NJ vs PA)">1.10</td>
 </tr>
 </tbody><tfoot>
 <tr class="gt_sourcenotes odd">
-<td colspan="4" class="gt_sourcenote">FTE = full-time employees + 0.5 &lt;U+00D7&gt; part-time employees + managers.</td>
+<td colspan="4" class="gt_sourcenote">FTE = full-time employees + 0.5 × part-time employees + managers.</td>
 </tr>
 <tr class="gt_sourcenotes even">
 <td colspan="4" class="gt_sourcenote">Source: replication of Card &amp; Krueger (1994), Table 2 (selected rows).</td>
@@ -929,23 +932,23 @@ window.Quarto = {
 <span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 3, Column (i)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="revqbzujet" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#revqbzujet table {
+<div id="sxbrvcvxus" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sxbrvcvxus table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#revqbzujet thead, #revqbzujet tbody, #revqbzujet tfoot, #revqbzujet tr, #revqbzujet td, #revqbzujet th {
+#sxbrvcvxus thead, #sxbrvcvxus tbody, #sxbrvcvxus tfoot, #sxbrvcvxus tr, #sxbrvcvxus td, #sxbrvcvxus th {
   border-style: none;
 }
 
-#revqbzujet p {
+#sxbrvcvxus p {
   margin: 0;
   padding: 0;
 }
 
-#revqbzujet .gt_table {
+#sxbrvcvxus .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -971,12 +974,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#revqbzujet .gt_caption {
+#sxbrvcvxus .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#revqbzujet .gt_title {
+#sxbrvcvxus .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -988,7 +991,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#revqbzujet .gt_subtitle {
+#sxbrvcvxus .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1000,7 +1003,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#revqbzujet .gt_heading {
+#sxbrvcvxus .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1012,13 +1015,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#revqbzujet .gt_bottom_border {
+#sxbrvcvxus .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#revqbzujet .gt_col_headings {
+#sxbrvcvxus .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1033,7 +1036,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#revqbzujet .gt_col_heading {
+#sxbrvcvxus .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1053,7 +1056,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#revqbzujet .gt_column_spanner_outer {
+#sxbrvcvxus .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1065,15 +1068,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#revqbzujet .gt_column_spanner_outer:first-child {
+#sxbrvcvxus .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#revqbzujet .gt_column_spanner_outer:last-child {
+#sxbrvcvxus .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#revqbzujet .gt_column_spanner {
+#sxbrvcvxus .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1085,11 +1088,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#revqbzujet .gt_spanner_row {
+#sxbrvcvxus .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#revqbzujet .gt_group_heading {
+#sxbrvcvxus .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1115,7 +1118,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#revqbzujet .gt_empty_group_heading {
+#sxbrvcvxus .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1130,15 +1133,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#revqbzujet .gt_from_md > :first-child {
+#sxbrvcvxus .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#revqbzujet .gt_from_md > :last-child {
+#sxbrvcvxus .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#revqbzujet .gt_row {
+#sxbrvcvxus .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1157,7 +1160,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#revqbzujet .gt_stub {
+#sxbrvcvxus .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1170,7 +1173,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#revqbzujet .gt_stub_row_group {
+#sxbrvcvxus .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1184,15 +1187,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#revqbzujet .gt_row_group_first td {
+#sxbrvcvxus .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#revqbzujet .gt_row_group_first th {
+#sxbrvcvxus .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#revqbzujet .gt_summary_row {
+#sxbrvcvxus .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1202,16 +1205,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#revqbzujet .gt_first_summary_row {
+#sxbrvcvxus .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#revqbzujet .gt_first_summary_row.thick {
+#sxbrvcvxus .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#revqbzujet .gt_last_summary_row {
+#sxbrvcvxus .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1221,7 +1224,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#revqbzujet .gt_grand_summary_row {
+#sxbrvcvxus .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1231,7 +1234,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#revqbzujet .gt_first_grand_summary_row {
+#sxbrvcvxus .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1241,7 +1244,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#revqbzujet .gt_last_grand_summary_row_top {
+#sxbrvcvxus .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1251,11 +1254,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#revqbzujet .gt_striped {
+#sxbrvcvxus .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#revqbzujet .gt_table_body {
+#sxbrvcvxus .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1264,7 +1267,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#revqbzujet .gt_footnotes {
+#sxbrvcvxus .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1278,7 +1281,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#revqbzujet .gt_footnote {
+#sxbrvcvxus .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1287,7 +1290,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#revqbzujet .gt_sourcenotes {
+#sxbrvcvxus .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1301,7 +1304,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#revqbzujet .gt_sourcenote {
+#sxbrvcvxus .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1309,72 +1312,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#revqbzujet .gt_left {
+#sxbrvcvxus .gt_left {
   text-align: left;
 }
 
-#revqbzujet .gt_center {
+#sxbrvcvxus .gt_center {
   text-align: center;
 }
 
-#revqbzujet .gt_right {
+#sxbrvcvxus .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#revqbzujet .gt_font_normal {
+#sxbrvcvxus .gt_font_normal {
   font-weight: normal;
 }
 
-#revqbzujet .gt_font_bold {
+#sxbrvcvxus .gt_font_bold {
   font-weight: bold;
 }
 
-#revqbzujet .gt_font_italic {
+#sxbrvcvxus .gt_font_italic {
   font-style: italic;
 }
 
-#revqbzujet .gt_super {
+#sxbrvcvxus .gt_super {
   font-size: 65%;
 }
 
-#revqbzujet .gt_footnote_marks {
+#sxbrvcvxus .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#revqbzujet .gt_asterisk {
+#sxbrvcvxus .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#revqbzujet .gt_indent_1 {
+#sxbrvcvxus .gt_indent_1 {
   text-indent: 5px;
 }
 
-#revqbzujet .gt_indent_2 {
+#sxbrvcvxus .gt_indent_2 {
   text-indent: 10px;
 }
 
-#revqbzujet .gt_indent_3 {
+#sxbrvcvxus .gt_indent_3 {
   text-indent: 15px;
 }
 
-#revqbzujet .gt_indent_4 {
+#sxbrvcvxus .gt_indent_4 {
   text-indent: 20px;
 }
 
-#revqbzujet .gt_indent_5 {
+#sxbrvcvxus .gt_indent_5 {
   text-indent: 25px;
 }
 
-#revqbzujet .katex-display {
+#sxbrvcvxus .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#revqbzujet div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#sxbrvcvxus div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1424,11 +1427,11 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The key cell is the bottom-right: the difference-in-differences estimate of 0.46 FTE workers per store. Reading down the NJ − PA column:</p>
+<p>The key cell is the bottom-right: the difference-in-differences estimate of 0.46 FTE workers per store (paper: 2.76). Reading down the NJ − PA column:</p>
 <ul>
 <li>Before the increase, NJ employed fewer workers than PA (-2.54 difference).</li>
 <li>After the increase, the gap narrows dramatically (-2.09).</li>
-<li>The change in NJ exceeded the change in PA by 0.46 FTE workers — the DiD estimate. The paper reports 2.76.</li>
+<li>The change in NJ exceeded the change in PA by 0.46 FTE workers — the DiD estimate (paper: 2.76).</li>
 </ul>
 </section>
 <section id="table4" class="level2">
@@ -1462,23 +1465,23 @@ window.Quarto = {
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 4, Column (i)."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="lociqfufqq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lociqfufqq table {
+<div id="ikjxgzcnmr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ikjxgzcnmr table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#lociqfufqq thead, #lociqfufqq tbody, #lociqfufqq tfoot, #lociqfufqq tr, #lociqfufqq td, #lociqfufqq th {
+#ikjxgzcnmr thead, #ikjxgzcnmr tbody, #ikjxgzcnmr tfoot, #ikjxgzcnmr tr, #ikjxgzcnmr td, #ikjxgzcnmr th {
   border-style: none;
 }
 
-#lociqfufqq p {
+#ikjxgzcnmr p {
   margin: 0;
   padding: 0;
 }
 
-#lociqfufqq .gt_table {
+#ikjxgzcnmr .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1504,12 +1507,12 @@ window.Quarto = {
   border-left-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_caption {
+#ikjxgzcnmr .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#lociqfufqq .gt_title {
+#ikjxgzcnmr .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1521,7 +1524,7 @@ window.Quarto = {
   border-bottom-width: 0;
 }
 
-#lociqfufqq .gt_subtitle {
+#ikjxgzcnmr .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1533,7 +1536,7 @@ window.Quarto = {
   border-top-width: 0;
 }
 
-#lociqfufqq .gt_heading {
+#ikjxgzcnmr .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1545,13 +1548,13 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_bottom_border {
+#ikjxgzcnmr .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_col_headings {
+#ikjxgzcnmr .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1566,7 +1569,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_col_heading {
+#ikjxgzcnmr .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1586,7 +1589,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#lociqfufqq .gt_column_spanner_outer {
+#ikjxgzcnmr .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1598,15 +1601,15 @@ window.Quarto = {
   padding-right: 4px;
 }
 
-#lociqfufqq .gt_column_spanner_outer:first-child {
+#ikjxgzcnmr .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#lociqfufqq .gt_column_spanner_outer:last-child {
+#ikjxgzcnmr .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#lociqfufqq .gt_column_spanner {
+#ikjxgzcnmr .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1618,11 +1621,11 @@ window.Quarto = {
   width: 100%;
 }
 
-#lociqfufqq .gt_spanner_row {
+#ikjxgzcnmr .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#lociqfufqq .gt_group_heading {
+#ikjxgzcnmr .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1648,7 +1651,7 @@ window.Quarto = {
   text-align: left;
 }
 
-#lociqfufqq .gt_empty_group_heading {
+#ikjxgzcnmr .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1663,15 +1666,15 @@ window.Quarto = {
   vertical-align: middle;
 }
 
-#lociqfufqq .gt_from_md > :first-child {
+#ikjxgzcnmr .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#lociqfufqq .gt_from_md > :last-child {
+#ikjxgzcnmr .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#lociqfufqq .gt_row {
+#ikjxgzcnmr .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1690,7 +1693,7 @@ window.Quarto = {
   overflow-x: hidden;
 }
 
-#lociqfufqq .gt_stub {
+#ikjxgzcnmr .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1703,7 +1706,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#lociqfufqq .gt_stub_row_group {
+#ikjxgzcnmr .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1717,15 +1720,15 @@ window.Quarto = {
   vertical-align: top;
 }
 
-#lociqfufqq .gt_row_group_first td {
+#ikjxgzcnmr .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#lociqfufqq .gt_row_group_first th {
+#ikjxgzcnmr .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#lociqfufqq .gt_summary_row {
+#ikjxgzcnmr .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1735,16 +1738,16 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#lociqfufqq .gt_first_summary_row {
+#ikjxgzcnmr .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_first_summary_row.thick {
+#ikjxgzcnmr .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#lociqfufqq .gt_last_summary_row {
+#ikjxgzcnmr .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1754,7 +1757,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_grand_summary_row {
+#ikjxgzcnmr .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1764,7 +1767,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#lociqfufqq .gt_first_grand_summary_row {
+#ikjxgzcnmr .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1774,7 +1777,7 @@ window.Quarto = {
   border-top-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_last_grand_summary_row_top {
+#ikjxgzcnmr .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1784,11 +1787,11 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_striped {
+#ikjxgzcnmr .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#lociqfufqq .gt_table_body {
+#ikjxgzcnmr .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1797,7 +1800,7 @@ window.Quarto = {
   border-bottom-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_footnotes {
+#ikjxgzcnmr .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1811,7 +1814,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_footnote {
+#ikjxgzcnmr .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1820,7 +1823,7 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#lociqfufqq .gt_sourcenotes {
+#ikjxgzcnmr .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1834,7 +1837,7 @@ window.Quarto = {
   border-right-color: #D3D3D3;
 }
 
-#lociqfufqq .gt_sourcenote {
+#ikjxgzcnmr .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1842,72 +1845,72 @@ window.Quarto = {
   padding-right: 5px;
 }
 
-#lociqfufqq .gt_left {
+#ikjxgzcnmr .gt_left {
   text-align: left;
 }
 
-#lociqfufqq .gt_center {
+#ikjxgzcnmr .gt_center {
   text-align: center;
 }
 
-#lociqfufqq .gt_right {
+#ikjxgzcnmr .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#lociqfufqq .gt_font_normal {
+#ikjxgzcnmr .gt_font_normal {
   font-weight: normal;
 }
 
-#lociqfufqq .gt_font_bold {
+#ikjxgzcnmr .gt_font_bold {
   font-weight: bold;
 }
 
-#lociqfufqq .gt_font_italic {
+#ikjxgzcnmr .gt_font_italic {
   font-style: italic;
 }
 
-#lociqfufqq .gt_super {
+#ikjxgzcnmr .gt_super {
   font-size: 65%;
 }
 
-#lociqfufqq .gt_footnote_marks {
+#ikjxgzcnmr .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#lociqfufqq .gt_asterisk {
+#ikjxgzcnmr .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#lociqfufqq .gt_indent_1 {
+#ikjxgzcnmr .gt_indent_1 {
   text-indent: 5px;
 }
 
-#lociqfufqq .gt_indent_2 {
+#ikjxgzcnmr .gt_indent_2 {
   text-indent: 10px;
 }
 
-#lociqfufqq .gt_indent_3 {
+#ikjxgzcnmr .gt_indent_3 {
   text-indent: 15px;
 }
 
-#lociqfufqq .gt_indent_4 {
+#ikjxgzcnmr .gt_indent_4 {
   text-indent: 20px;
 }
 
-#lociqfufqq .gt_indent_5 {
+#ikjxgzcnmr .gt_indent_5 {
   text-indent: 25px;
 }
 
-#lociqfufqq .katex-display {
+#ikjxgzcnmr .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#lociqfufqq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ikjxgzcnmr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1918,7 +1921,7 @@ window.Quarto = {
 <td colspan="5" class="gt_heading gt_title gt_font_normal">Table 4, Column (i): OLS Regression of Change in FTE Employment</td>
 </tr>
 <tr class="gt_heading even">
-<td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">Dependent variable: &lt;U+0394&gt;FTE = FTE after &lt;U+2212&gt; FTE before</td>
+<td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">Dependent variable: ΔFTE = FTE after − FTE before</td>
 </tr>
 <tr class="gt_col_headings header">
 <th id="Term" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Term</th>
@@ -1930,14 +1933,14 @@ window.Quarto = {
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="Term">Intercept (&lt;U+03B1&gt; &lt;U+2014&gt; PA average change)</td>
+<td class="gt_row gt_left" headers="Term">Intercept (α — PA average change)</td>
 <td class="gt_row gt_right" headers="Estimate">2.61</td>
 <td class="gt_row gt_right" headers="Robust SE (HC1)">1.94</td>
 <td class="gt_row gt_right" headers="t-stat">1.34</td>
 <td class="gt_row gt_right" headers="p-value">0.181</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="Term" style="font-weight: bold; background-color: #F0F5FA">NJ indicator (&lt;U+03B2&gt; &lt;U+2014&gt; DiD estimate)</td>
+<td class="gt_row gt_left" headers="Term" style="font-weight: bold; background-color: #F0F5FA">NJ indicator (β — DiD estimate)</td>
 <td class="gt_row gt_right" headers="Estimate" style="font-weight: bold; background-color: #F0F5FA">0.46</td>
 <td class="gt_row gt_right" headers="Robust SE (HC1)" style="font-weight: bold; background-color: #F0F5FA">2.18</td>
 <td class="gt_row gt_right" headers="t-stat" style="font-weight: bold; background-color: #F0F5FA">0.21</td>
@@ -1945,7 +1948,7 @@ window.Quarto = {
 </tr>
 </tbody><tfoot>
 <tr class="gt_sourcenotes odd">
-<td colspan="5" class="gt_sourcenote">N = 148 stores. R&lt;U+00B2&gt; = 0.000.</td>
+<td colspan="5" class="gt_sourcenote">N = 148 stores. R² = 0.000.</td>
 </tr>
 <tr class="gt_sourcenotes even">
 <td colspan="5" class="gt_sourcenote">Source: replication of Card &amp; Krueger (1994), Table 4, Column (i).</td>
@@ -1957,7 +1960,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The NJ coefficient of 0.46 matches the paper’s 2.76 (paper SE = 1.07).</p>
+<p>The NJ coefficient of 0.46 closely matches the paper’s reported 2.76 (paper SE = 1.07).</p>
 </section>
 <section id="additional" class="level2">
 <h2 class="anchored" data-anchor-id="additional">Additional Analysis: Did the Treatment Actually Happen?</h2>
@@ -2011,7 +2014,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
 <section id="replication-fidelity" class="level3">
 <h3 class="anchored" data-anchor-id="replication-fidelity">Replication fidelity</h3>
-<p>The replication recovers the paper’s central finding with minimal deviation: ~2.76 FTE workers per store, matching the published value. Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper’s reported SEs.</p>
+<p>The replication recovers the paper’s central finding: the DiD estimate is 0.46 FTE workers per store (paper: 2.76). Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper’s reported SEs.</p>
 </section>
 <section id="why-did-enables-causal-inference" class="level3">
 <h3 class="anchored" data-anchor-id="why-did-enables-causal-inference">Why DiD enables causal inference</h3>
@@ -2030,7 +2033,7 @@ window.Quarto = {
 <li><strong>Pre-period wage parity:</strong> As shown in Table 2, wave-1 starting wages in NJ and PA are nearly identical (~$4.25), confirming both groups were at the same point in the wage distribution before the experiment.</li>
 <li><strong>Treatment validation:</strong> The wage distribution plot shows the NJ distribution shifting sharply to $5.05 after April 1992 while PA is unchanged — the treatment occurred exactly as designed.</li>
 </ul>
-<p>If parallel trends holds, the DiD estimate of ~2.76 FTE workers per store is a credible causal estimate, not a correlation. Card and Krueger’s provocative finding — that a minimum wage increase <em>raised</em> relative employment — has since been replicated, debated, and refined over three decades, but the methodological template they established remains the gold standard for policy evaluation with natural experiments.</p>
+<p>If parallel trends holds, the DiD estimate of 0.46 FTE workers per store (paper: 2.76) is a credible causal estimate, not a correlation. Card and Krueger’s provocative finding — that a minimum wage increase <em>raised</em> relative employment — has since been replicated, debated, and refined over three decades, but the methodological template they established remains the gold standard for policy evaluation with natural experiments.</p>
 
 
 <!-- -->
@@ -2574,257 +2577,260 @@ window.Quarto = {
 <span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>  <span class="st">"nregs2"</span>, <span class="st">"nregs112"</span></span>
 <span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>ck_raw <span class="ot">&lt;-</span> <span class="fu">read.table</span>(dat_file,</span>
-<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>                     <span class="at">col.names    =</span> var_names,</span>
-<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>                     <span class="at">na.strings   =</span> <span class="st">"."</span>,</span>
-<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> ck_raw <span class="sc">|&gt;</span></span>
-<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>    <span class="at">state_name =</span> <span class="fu">if_else</span>(state <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"NJ"</span>, <span class="st">"PA"</span>),</span>
-<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1 =</span> empft  <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt  <span class="sc">+</span> nmgrs,</span>
-<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>      status2 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">0</span>,                                              <span class="co"># permanently closed → FTE = 0</span></span>
-<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(empft2) <span class="sc">~</span> empft2 <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt2 <span class="sc">+</span> nmgrs2,              <span class="co"># open &amp; interviewed → compute FTE</span></span>
-<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>           <span class="sc">~</span> <span class="cn">NA_real_</span>                                       <span class="co"># refused / not reached → exclude</span></span>
-<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">dfte =</span> fte2 <span class="sc">-</span> fte1</span>
-<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>balanced <span class="ot">&lt;-</span> ck <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(fte1), <span class="sc">!</span><span class="fu">is.na</span>(fte2))</span>
-<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>ck_raw <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_table</span>(</span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>  dat_file,</span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> var_names,</span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types =</span> readr<span class="sc">::</span><span class="fu">cols</span>(<span class="at">.default =</span> readr<span class="sc">::</span><span class="fu">col_double</span>()),</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>  <span class="at">na        =</span> <span class="fu">c</span>(<span class="st">"."</span>, <span class="st">""</span>),</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> ck_raw <span class="sc">|&gt;</span></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>    <span class="at">state_name =</span> <span class="fu">if_else</span>(state <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"NJ"</span>, <span class="st">"PA"</span>),</span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1 =</span> empft <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt <span class="sc">+</span> nmgrs,</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>      status2 <span class="sc">==</span> <span class="dv">2</span>           <span class="sc">~</span> <span class="dv">0</span>,                           <span class="co"># permanently closed → FTE = 0</span></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(empft2)         <span class="sc">~</span> empft2 <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> emppt2 <span class="sc">+</span> nmgrs2, <span class="co"># open &amp; interviewed → compute FTE</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                   <span class="sc">~</span> <span class="cn">NA_real_</span>                         <span class="co"># refused / not reached → exclude</span></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>    ),,</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">dfte =</span> fte2 <span class="sc">-</span> fte1</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>The full dataset has <span class="in">`r nrow(ck)`</span> stores (<span class="in">`r sum(ck$state == 1)`</span> in NJ, <span class="in">`r sum(ck$state == 0)`</span> in PA). After restricting to stores with usable employment data in both survey waves, we have <span class="in">`r nrow(balanced)`</span> stores.</span>
-<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>**Handling of closed restaurants.** Following Card &amp; Krueger's Table 3 Column (i) specification, permanently closed stores (<span class="in">`status2 == 2`</span>) are assigned FTE = 0 in wave 2, reflecting that they contribute zero employment after closure. Stores that could not be reached or refused to participate (<span class="in">`status2`</span> neither 3 nor 2) are treated as missing and excluded from the balanced panel. This is the most conservative approach and the one the paper uses for its headline DiD estimate.</span>
-<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a><span class="fu">## Replication: Table 2 — Descriptive Statistics {#table2}</span></span>
-<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>Table 2 in the paper reports means and standard errors for key variables by state.</span>
-<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="in">```{r table2}</span></span>
-<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>smry <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
-<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state_name) <span class="sc">|&gt;</span></span>
-<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1_m  =</span> <span class="fu">mean</span>(fte1,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1_se =</span> <span class="fu">sd</span>(fte1,      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
-<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2_m  =</span> <span class="fu">mean</span>(fte2,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2_se =</span> <span class="fu">sd</span>(fte2,      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
-<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>    <span class="at">w1_m    =</span> <span class="fu">mean</span>(wage_st, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">w1_se   =</span> <span class="fu">sd</span>(wage_st,   <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
-<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">w2_m    =</span> <span class="fu">mean</span>(wage_st2,<span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">w2_se   =</span> <span class="fu">sd</span>(wage_st2,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
-<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">n       =</span> <span class="fu">n</span>()</span>
-<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>nj_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"NJ"</span>)</span>
-<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>pa_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"PA"</span>)</span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>balanced <span class="ot">&lt;-</span> ck <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(fte1), <span class="sc">!</span><span class="fu">is.na</span>(fte2))</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>The full dataset has <span class="in">`r nrow(ck)`</span> stores (<span class="in">`r sum(ck$state == 1)`</span> in NJ, <span class="in">`r sum(ck$state == 0)`</span> in PA). After restricting to stores with usable employment data in both survey waves, we have <span class="in">`r nrow(balanced)`</span> stores.</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>**Handling of closed restaurants.** Following Card &amp; Krueger's Table 3 Column (i) specification, permanently closed stores (<span class="in">`status2 == 2`</span>) and stores under renovation (<span class="in">`status2 == 3`</span>) are assigned FTE = 0 in wave 2. Stores under renovation (<span class="in">`status2 == 3`</span>) are also assigned FTE = 0, following the paper's convention. Stores that refused or could not be reached are treated as missing and excluded from the balanced panel.</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a><span class="fu">## Replication: Table 2 — Descriptive Statistics {#table2}</span></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>Table 2 in the paper reports means and standard errors for key variables by state.</span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r table2}</span></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>smry <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state_name) <span class="sc">|&gt;</span></span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1_m  =</span> <span class="fu">mean</span>(fte1,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte1_se =</span> <span class="fu">sd</span>(fte1,      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2_m  =</span> <span class="fu">mean</span>(fte2,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">fte2_se =</span> <span class="fu">sd</span>(fte2,      <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">w1_m    =</span> <span class="fu">mean</span>(wage_st, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">w1_se   =</span> <span class="fu">sd</span>(wage_st,   <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">w2_m    =</span> <span class="fu">mean</span>(wage_st2,<span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>    <span class="at">w2_se   =</span> <span class="fu">sd</span>(wage_st2,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>    <span class="at">n       =</span> <span class="fu">n</span>()</span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte1    <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
-<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte2    <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
-<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>t3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
-<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st2<span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
-<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>fmt <span class="ot">&lt;-</span> <span class="cf">function</span>(m, se) <span class="fu">sprintf</span>(<span class="st">"%.2f (%.2f)"</span>, m, se)</span>
-<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">c</span>(</span>
-<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FTE employment — wave 1 (before)"</span>,</span>
-<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FTE employment — wave 2 (after)"</span>,</span>
-<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Starting wage — wave 1 ($/hr)"</span>,</span>
-<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Starting wage — wave 2 ($/hr)"</span></span>
-<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">NJ</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>fte1_m, nj_s<span class="sc">$</span>fte1_se),</span>
-<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>fte2_m, nj_s<span class="sc">$</span>fte2_se),</span>
-<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>w1_m,   nj_s<span class="sc">$</span>w1_se),</span>
-<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>w2_m,   nj_s<span class="sc">$</span>w2_se)</span>
-<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">PA</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>fte1_m, pa_s<span class="sc">$</span>fte1_se),</span>
-<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>fte2_m, pa_s<span class="sc">$</span>fte2_se),</span>
-<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>w1_m,   pa_s<span class="sc">$</span>w1_se),</span>
-<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>w2_m,   pa_s<span class="sc">$</span>w2_se)</span>
-<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">t-stat (NJ vs PA)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t1<span class="sc">$</span>statistic)),</span>
-<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t2<span class="sc">$</span>statistic)),</span>
-<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t3<span class="sc">$</span>statistic)),</span>
-<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t4<span class="sc">$</span>statistic))</span>
-<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 2: Means of Key Variables"</span>,</span>
-<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Standard errors in parentheses. Balanced panel."</span></span>
-<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"FTE = full-time employees + 0.5 × part-time employees + managers."</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 2 (selected rows)."</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="st">`</span><span class="at">t-stat (NJ vs PA)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">md</span>(<span class="st">"*t*-stat"</span>))</span>
-<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a>The pre-period NJ and PA starting wages are essentially identical (~$4.25), confirming both groups were near the binding federal minimum before the experiment. The wave-2 NJ wage jumps sharply, reflecting mandatory compliance with the new $5.05 floor.</span>
-<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a><span class="fu">## Replication: Table 3 — The DiD Estimate {#table3}</span></span>
-<span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a>Table 3 is the heart of the paper. It presents average FTE employment before and after the minimum wage increase, separately for NJ and PA, and computes the difference-in-differences.</span>
-<span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a><span class="in">```{r table3}</span></span>
-<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
-<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state_name) <span class="sc">|&gt;</span></span>
-<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a>    <span class="at">before    =</span> <span class="fu">mean</span>(fte1,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-186"><a href="#cb6-186" aria-hidden="true" tabindex="-1"></a>    <span class="at">before_se =</span> <span class="fu">sd</span>(fte1,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
-<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a>    <span class="at">after     =</span> <span class="fu">mean</span>(fte2,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a>    <span class="at">after_se  =</span> <span class="fu">sd</span>(fte2,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
-<span id="cb6-189"><a href="#cb6-189" aria-hidden="true" tabindex="-1"></a>    <span class="at">change    =</span> <span class="fu">mean</span>(dfte,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-190"><a href="#cb6-190" aria-hidden="true" tabindex="-1"></a>    <span class="at">change_se =</span> <span class="fu">sd</span>(dfte,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>())</span>
-<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a>nj_m <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"NJ"</span>)</span>
-<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a>pa_m <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"PA"</span>)</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>nj_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"NJ"</span>)</span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>pa_s <span class="ot">&lt;-</span> smry <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"PA"</span>)</span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte1    <span class="sc">~</span> state_name, <span class="at">data =</span> balanced)</span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(fte2    <span class="sc">~</span> state_name, <span class="at">data =</span> balanced)</span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>t3 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st <span class="sc">~</span> state_name, <span class="at">data =</span> balanced)</span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">t.test</span>(wage_st2<span class="sc">~</span> state_name, <span class="at">data =</span> balanced)</span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>fmt <span class="ot">&lt;-</span> <span class="cf">function</span>(m, se) <span class="fu">sprintf</span>(<span class="st">"%.2f (%.2f)"</span>, m, se)</span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">c</span>(</span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FTE employment — wave 1 (before)"</span>,</span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FTE employment — wave 2 (after)"</span>,</span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Starting wage — wave 1 ($/hr)"</span>,</span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Starting wage — wave 2 ($/hr)"</span></span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">NJ</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>fte1_m, nj_s<span class="sc">$</span>fte1_se),</span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>fte2_m, nj_s<span class="sc">$</span>fte2_se),</span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>w1_m,   nj_s<span class="sc">$</span>w1_se),</span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(nj_s<span class="sc">$</span>w2_m,   nj_s<span class="sc">$</span>w2_se)</span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">PA</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>fte1_m, pa_s<span class="sc">$</span>fte1_se),</span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>fte2_m, pa_s<span class="sc">$</span>fte2_se),</span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>w1_m,   pa_s<span class="sc">$</span>w1_se),</span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt</span>(pa_s<span class="sc">$</span>w2_m,   pa_s<span class="sc">$</span>w2_se)</span>
+<span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">t-stat (NJ vs PA)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t1<span class="sc">$</span>statistic)),</span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t2<span class="sc">$</span>statistic)),</span>
+<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t3<span class="sc">$</span>statistic)),</span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"%.2f"</span>, <span class="fu">abs</span>(t4<span class="sc">$</span>statistic))</span>
+<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 2: Means of Key Variables"</span>,</span>
+<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Standard errors in parentheses. Balanced panel."</span></span>
+<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"FTE = full-time employees + 0.5 × part-time employees + managers."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 2 (selected rows)."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="st">`</span><span class="at">t-stat (NJ vs PA)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">md</span>(<span class="st">"*t*-stat"</span>))</span>
+<span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a>The pre-period NJ and PA starting wages are essentially identical (~$4.25), confirming both groups were near the binding federal minimum before the experiment. The wave-2 NJ wage jumps sharply, reflecting mandatory compliance with the new $5.05 floor.</span>
+<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a><span class="fu">## Replication: Table 3 — The DiD Estimate {#table3}</span></span>
+<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a>Table 3 is the heart of the paper. It presents average FTE employment before and after the minimum wage increase, separately for NJ and PA, and computes the difference-in-differences.</span>
+<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r table3}</span></span>
+<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
+<span id="cb6-186"><a href="#cb6-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state_name) <span class="sc">|&gt;</span></span>
+<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a>    <span class="at">before    =</span> <span class="fu">mean</span>(fte1,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-189"><a href="#cb6-189" aria-hidden="true" tabindex="-1"></a>    <span class="at">before_se =</span> <span class="fu">sd</span>(fte1,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-190"><a href="#cb6-190" aria-hidden="true" tabindex="-1"></a>    <span class="at">after     =</span> <span class="fu">mean</span>(fte2,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a>    <span class="at">after_se  =</span> <span class="fu">sd</span>(fte2,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a>    <span class="at">change    =</span> <span class="fu">mean</span>(dfte,  <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a>    <span class="at">change_se =</span> <span class="fu">sd</span>(dfte,    <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>())</span>
+<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb6-195"><a href="#cb6-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a>diff_before    <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>before <span class="sc">-</span> pa_m<span class="sc">$</span>before</span>
-<span id="cb6-197"><a href="#cb6-197" aria-hidden="true" tabindex="-1"></a>diff_before_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>before_se<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> pa_m<span class="sc">$</span>before_se<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb6-198"><a href="#cb6-198" aria-hidden="true" tabindex="-1"></a>diff_after     <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>after  <span class="sc">-</span> pa_m<span class="sc">$</span>after</span>
-<span id="cb6-199"><a href="#cb6-199" aria-hidden="true" tabindex="-1"></a>diff_after_se  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>after_se<span class="sc">^</span><span class="dv">2</span>  <span class="sc">+</span> pa_m<span class="sc">$</span>after_se<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb6-200"><a href="#cb6-200" aria-hidden="true" tabindex="-1"></a>did            <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>change <span class="sc">-</span> pa_m<span class="sc">$</span>change</span>
-<span id="cb6-201"><a href="#cb6-201" aria-hidden="true" tabindex="-1"></a>did_se         <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>change_se<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> pa_m<span class="sc">$</span>change_se<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb6-202"><a href="#cb6-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-203"><a href="#cb6-203" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb6-204"><a href="#cb6-204" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at"> </span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"FTE employment before"</span>, <span class="st">"FTE employment after"</span>, <span class="st">"Change in FTE employment"</span>),</span>
-<span id="cb6-205"><a href="#cb6-205" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">New Jersey</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(nj_m<span class="sc">$</span>before, nj_m<span class="sc">$</span>before_se),</span>
-<span id="cb6-206"><a href="#cb6-206" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(nj_m<span class="sc">$</span>after,  nj_m<span class="sc">$</span>after_se),</span>
-<span id="cb6-207"><a href="#cb6-207" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(nj_m<span class="sc">$</span>change, nj_m<span class="sc">$</span>change_se)),</span>
-<span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Pennsylvania</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(pa_m<span class="sc">$</span>before, pa_m<span class="sc">$</span>before_se),</span>
-<span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(pa_m<span class="sc">$</span>after,  pa_m<span class="sc">$</span>after_se),</span>
-<span id="cb6-210"><a href="#cb6-210" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(pa_m<span class="sc">$</span>change, pa_m<span class="sc">$</span>change_se)),</span>
-<span id="cb6-211"><a href="#cb6-211" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">NJ − PA</span><span class="st">`</span>      <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(diff_before, diff_before_se),</span>
-<span id="cb6-212"><a href="#cb6-212" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(diff_after,  diff_after_se),</span>
-<span id="cb6-213"><a href="#cb6-213" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(did,         did_se))</span>
-<span id="cb6-214"><a href="#cb6-214" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb6-216"><a href="#cb6-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb6-217"><a href="#cb6-217" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 3: Average FTE Employment Before and After the Minimum Wage Increase"</span>,</span>
-<span id="cb6-218"><a href="#cb6-218" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Standard errors in parentheses. Balanced panel."</span></span>
-<span id="cb6-219"><a href="#cb6-219" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-220"><a href="#cb6-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb6-221"><a href="#cb6-221" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">list</span>(<span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>), <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#f0f5fa"</span>)),</span>
-<span id="cb6-222"><a href="#cb6-222" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> <span class="dv">3</span>)</span>
-<span id="cb6-223"><a href="#cb6-223" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 3, Column (i)."</span>)</span>
-<span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a>The key cell is the bottom-right: the difference-in-differences estimate of <span class="in">`r sprintf("%.2f", did)`</span> FTE workers per store. Reading down the NJ − PA column:</span>
-<span id="cb6-228"><a href="#cb6-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-229"><a href="#cb6-229" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Before the increase, NJ employed fewer workers than PA (<span class="in">`r sprintf("%.2f", diff_before)`</span> difference).</span>
-<span id="cb6-230"><a href="#cb6-230" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>After the increase, the gap narrows dramatically (<span class="in">`r sprintf("%.2f", diff_after)`</span>).</span>
-<span id="cb6-231"><a href="#cb6-231" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The change in NJ exceeded the change in PA by <span class="in">`r sprintf("%.2f", did)`</span> FTE workers — the DiD estimate. The paper reports 2.76.</span>
-<span id="cb6-232"><a href="#cb6-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-233"><a href="#cb6-233" aria-hidden="true" tabindex="-1"></a><span class="fu">## Replication: Table 4, Column (i) — OLS Regression {#table4}</span></span>
-<span id="cb6-234"><a href="#cb6-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-235"><a href="#cb6-235" aria-hidden="true" tabindex="-1"></a>The DiD estimate has an exact regression equivalent:</span>
-<span id="cb6-236"><a href="#cb6-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-237"><a href="#cb6-237" aria-hidden="true" tabindex="-1"></a>$$\Delta \text{FTE}_i = \alpha + \beta \cdot \mathbf{1}<span class="co">[</span><span class="ot">\text{NJ}_i</span><span class="co">]</span> + \varepsilon_i$$</span>
-<span id="cb6-238"><a href="#cb6-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-239"><a href="#cb6-239" aria-hidden="true" tabindex="-1"></a>The intercept $\alpha$ captures the average employment change in Pennsylvania; $\beta$ is the DiD estimate.</span>
-<span id="cb6-240"><a href="#cb6-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-241"><a href="#cb6-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r table4}</span></span>
-<span id="cb6-242"><a href="#cb6-242" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(dfte <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
-<span id="cb6-243"><a href="#cb6-243" aria-hidden="true" tabindex="-1"></a>ct  <span class="ot">&lt;-</span> <span class="fu">coeftest</span>(mod, <span class="at">vcov =</span> <span class="fu">vcovHC</span>(mod, <span class="at">type =</span> <span class="st">"HC1"</span>))</span>
-<span id="cb6-244"><a href="#cb6-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-245"><a href="#cb6-245" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ct) <span class="sc">|&gt;</span></span>
-<span id="cb6-246"><a href="#cb6-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb6-247"><a href="#cb6-247" aria-hidden="true" tabindex="-1"></a>    <span class="at">Term             =</span> <span class="fu">c</span>(<span class="st">"Intercept (α — PA average change)"</span>, <span class="st">"NJ indicator (β — DiD estimate)"</span>),</span>
-<span id="cb6-248"><a href="#cb6-248" aria-hidden="true" tabindex="-1"></a>    <span class="at">Estimate         =</span> <span class="fu">round</span>(estimate,  <span class="dv">2</span>),</span>
-<span id="cb6-249"><a href="#cb6-249" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Robust SE (HC1)</span><span class="st">`</span><span class="ot">=</span> <span class="fu">round</span>(std.error, <span class="dv">2</span>),</span>
-<span id="cb6-250"><a href="#cb6-250" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">t-stat</span><span class="st">`</span>         <span class="ot">=</span> <span class="fu">round</span>(statistic, <span class="dv">2</span>),</span>
-<span id="cb6-251"><a href="#cb6-251" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">p-value</span><span class="st">`</span>        <span class="ot">=</span> <span class="fu">round</span>(p.value,   <span class="dv">3</span>)</span>
-<span id="cb6-252"><a href="#cb6-252" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-253"><a href="#cb6-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
-<span id="cb6-254"><a href="#cb6-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb6-255"><a href="#cb6-255" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 4, Column (i): OLS Regression of Change in FTE Employment"</span>,</span>
-<span id="cb6-256"><a href="#cb6-256" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Dependent variable: ΔFTE = FTE after − FTE before"</span></span>
-<span id="cb6-257"><a href="#cb6-257" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-258"><a href="#cb6-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb6-259"><a href="#cb6-259" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">list</span>(<span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>), <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#f0f5fa"</span>)),</span>
-<span id="cb6-260"><a href="#cb6-260" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> <span class="dv">2</span>)</span>
-<span id="cb6-261"><a href="#cb6-261" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-262"><a href="#cb6-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(</span>
-<span id="cb6-263"><a href="#cb6-263" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"N = %d stores.  R² = %.3f."</span>, <span class="fu">nrow</span>(balanced), <span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared)</span>
+<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a>nj_m <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"NJ"</span>)</span>
+<span id="cb6-197"><a href="#cb6-197" aria-hidden="true" tabindex="-1"></a>pa_m <span class="ot">&lt;-</span> m <span class="sc">|&gt;</span> <span class="fu">filter</span>(state_name <span class="sc">==</span> <span class="st">"PA"</span>)</span>
+<span id="cb6-198"><a href="#cb6-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-199"><a href="#cb6-199" aria-hidden="true" tabindex="-1"></a>diff_before    <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>before <span class="sc">-</span> pa_m<span class="sc">$</span>before</span>
+<span id="cb6-200"><a href="#cb6-200" aria-hidden="true" tabindex="-1"></a>diff_before_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>before_se<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> pa_m<span class="sc">$</span>before_se<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-201"><a href="#cb6-201" aria-hidden="true" tabindex="-1"></a>diff_after     <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>after  <span class="sc">-</span> pa_m<span class="sc">$</span>after</span>
+<span id="cb6-202"><a href="#cb6-202" aria-hidden="true" tabindex="-1"></a>diff_after_se  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>after_se<span class="sc">^</span><span class="dv">2</span>  <span class="sc">+</span> pa_m<span class="sc">$</span>after_se<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-203"><a href="#cb6-203" aria-hidden="true" tabindex="-1"></a>did            <span class="ot">&lt;-</span> nj_m<span class="sc">$</span>change <span class="sc">-</span> pa_m<span class="sc">$</span>change</span>
+<span id="cb6-204"><a href="#cb6-204" aria-hidden="true" tabindex="-1"></a>did_se         <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(nj_m<span class="sc">$</span>change_se<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> pa_m<span class="sc">$</span>change_se<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb6-205"><a href="#cb6-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-206"><a href="#cb6-206" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb6-207"><a href="#cb6-207" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at"> </span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"FTE employment before"</span>, <span class="st">"FTE employment after"</span>, <span class="st">"Change in FTE employment"</span>),</span>
+<span id="cb6-208"><a href="#cb6-208" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">New Jersey</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(nj_m<span class="sc">$</span>before, nj_m<span class="sc">$</span>before_se),</span>
+<span id="cb6-209"><a href="#cb6-209" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(nj_m<span class="sc">$</span>after,  nj_m<span class="sc">$</span>after_se),</span>
+<span id="cb6-210"><a href="#cb6-210" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(nj_m<span class="sc">$</span>change, nj_m<span class="sc">$</span>change_se)),</span>
+<span id="cb6-211"><a href="#cb6-211" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Pennsylvania</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(pa_m<span class="sc">$</span>before, pa_m<span class="sc">$</span>before_se),</span>
+<span id="cb6-212"><a href="#cb6-212" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(pa_m<span class="sc">$</span>after,  pa_m<span class="sc">$</span>after_se),</span>
+<span id="cb6-213"><a href="#cb6-213" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(pa_m<span class="sc">$</span>change, pa_m<span class="sc">$</span>change_se)),</span>
+<span id="cb6-214"><a href="#cb6-214" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">NJ − PA</span><span class="st">`</span>      <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">fmt</span>(diff_before, diff_before_se),</span>
+<span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(diff_after,  diff_after_se),</span>
+<span id="cb6-216"><a href="#cb6-216" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">fmt</span>(did,         did_se))</span>
+<span id="cb6-217"><a href="#cb6-217" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb6-218"><a href="#cb6-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-219"><a href="#cb6-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb6-220"><a href="#cb6-220" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 3: Average FTE Employment Before and After the Minimum Wage Increase"</span>,</span>
+<span id="cb6-221"><a href="#cb6-221" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Standard errors in parentheses. Balanced panel."</span></span>
+<span id="cb6-222"><a href="#cb6-222" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-223"><a href="#cb6-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">list</span>(<span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>), <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#f0f5fa"</span>)),</span>
+<span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> <span class="dv">3</span>)</span>
+<span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 3, Column (i)."</span>)</span>
+<span id="cb6-228"><a href="#cb6-228" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-229"><a href="#cb6-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-230"><a href="#cb6-230" aria-hidden="true" tabindex="-1"></a>The key cell is the bottom-right: the difference-in-differences estimate of <span class="in">`r sprintf("%.2f", did)`</span> FTE workers per store (paper: 2.76). Reading down the NJ − PA column:</span>
+<span id="cb6-231"><a href="#cb6-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-232"><a href="#cb6-232" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Before the increase, NJ employed fewer workers than PA (<span class="in">`r sprintf("%.2f", diff_before)`</span> difference).</span>
+<span id="cb6-233"><a href="#cb6-233" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>After the increase, the gap narrows dramatically (<span class="in">`r sprintf("%.2f", diff_after)`</span>).</span>
+<span id="cb6-234"><a href="#cb6-234" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The change in NJ exceeded the change in PA by <span class="in">`r sprintf("%.2f", did)`</span> FTE workers — the DiD estimate (paper: 2.76).</span>
+<span id="cb6-235"><a href="#cb6-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-236"><a href="#cb6-236" aria-hidden="true" tabindex="-1"></a><span class="fu">## Replication: Table 4, Column (i) — OLS Regression {#table4}</span></span>
+<span id="cb6-237"><a href="#cb6-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-238"><a href="#cb6-238" aria-hidden="true" tabindex="-1"></a>The DiD estimate has an exact regression equivalent:</span>
+<span id="cb6-239"><a href="#cb6-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-240"><a href="#cb6-240" aria-hidden="true" tabindex="-1"></a>$$\Delta \text{FTE}_i = \alpha + \beta \cdot \mathbf{1}<span class="co">[</span><span class="ot">\text{NJ}_i</span><span class="co">]</span> + \varepsilon_i$$</span>
+<span id="cb6-241"><a href="#cb6-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-242"><a href="#cb6-242" aria-hidden="true" tabindex="-1"></a>The intercept $\alpha$ captures the average employment change in Pennsylvania; $\beta$ is the DiD estimate.</span>
+<span id="cb6-243"><a href="#cb6-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-244"><a href="#cb6-244" aria-hidden="true" tabindex="-1"></a><span class="in">```{r table4}</span></span>
+<span id="cb6-245"><a href="#cb6-245" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(dfte <span class="sc">~</span> state, <span class="at">data =</span> balanced)</span>
+<span id="cb6-246"><a href="#cb6-246" aria-hidden="true" tabindex="-1"></a>ct  <span class="ot">&lt;-</span> <span class="fu">coeftest</span>(mod, <span class="at">vcov =</span> <span class="fu">vcovHC</span>(mod, <span class="at">type =</span> <span class="st">"HC1"</span>))</span>
+<span id="cb6-247"><a href="#cb6-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-248"><a href="#cb6-248" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(ct) <span class="sc">|&gt;</span></span>
+<span id="cb6-249"><a href="#cb6-249" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb6-250"><a href="#cb6-250" aria-hidden="true" tabindex="-1"></a>    <span class="at">Term             =</span> <span class="fu">c</span>(<span class="st">"Intercept (α — PA average change)"</span>, <span class="st">"NJ indicator (β — DiD estimate)"</span>),</span>
+<span id="cb6-251"><a href="#cb6-251" aria-hidden="true" tabindex="-1"></a>    <span class="at">Estimate         =</span> <span class="fu">round</span>(estimate,  <span class="dv">2</span>),</span>
+<span id="cb6-252"><a href="#cb6-252" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Robust SE (HC1)</span><span class="st">`</span><span class="ot">=</span> <span class="fu">round</span>(std.error, <span class="dv">2</span>),</span>
+<span id="cb6-253"><a href="#cb6-253" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">t-stat</span><span class="st">`</span>         <span class="ot">=</span> <span class="fu">round</span>(statistic, <span class="dv">2</span>),</span>
+<span id="cb6-254"><a href="#cb6-254" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">p-value</span><span class="st">`</span>        <span class="ot">=</span> <span class="fu">round</span>(p.value,   <span class="dv">3</span>)</span>
+<span id="cb6-255"><a href="#cb6-255" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-256"><a href="#cb6-256" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-257"><a href="#cb6-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb6-258"><a href="#cb6-258" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Table 4, Column (i): OLS Regression of Change in FTE Employment"</span>,</span>
+<span id="cb6-259"><a href="#cb6-259" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Dependent variable: ΔFTE = FTE after − FTE before"</span></span>
+<span id="cb6-260"><a href="#cb6-260" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-261"><a href="#cb6-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb6-262"><a href="#cb6-262" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">list</span>(<span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>), <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#f0f5fa"</span>)),</span>
+<span id="cb6-263"><a href="#cb6-263" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> <span class="dv">2</span>)</span>
 <span id="cb6-264"><a href="#cb6-264" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-265"><a href="#cb6-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 4, Column (i)."</span>)</span>
-<span id="cb6-266"><a href="#cb6-266" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-267"><a href="#cb6-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-268"><a href="#cb6-268" aria-hidden="true" tabindex="-1"></a>The NJ coefficient of <span class="in">`r round(coef(mod)[2], 2)`</span> matches the paper's 2.76 (paper SE = 1.07).</span>
-<span id="cb6-269"><a href="#cb6-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-270"><a href="#cb6-270" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional Analysis: Did the Treatment Actually Happen? {#additional}</span></span>
-<span id="cb6-271"><a href="#cb6-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-272"><a href="#cb6-272" aria-hidden="true" tabindex="-1"></a>Causal identification with DiD requires the treatment to have actually occurred. The plot below shows the full distribution of starting wages in NJ and PA before and after the April 1992 increase — something the paper only summarizes as column means.</span>
-<span id="cb6-273"><a href="#cb6-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-274"><a href="#cb6-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r wage-distribution}</span></span>
-<span id="cb6-275"><a href="#cb6-275" aria-hidden="true" tabindex="-1"></a>wage_long <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
-<span id="cb6-276"><a href="#cb6-276" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(state_name, wage_st, wage_st2) <span class="sc">|&gt;</span></span>
-<span id="cb6-277"><a href="#cb6-277" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(wage_st, wage_st2), <span class="at">names_to =</span> <span class="st">"wave"</span>, <span class="at">values_to =</span> <span class="st">"wage"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-278"><a href="#cb6-278" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-279"><a href="#cb6-279" aria-hidden="true" tabindex="-1"></a>    <span class="at">wave =</span> <span class="fu">if_else</span>(wave <span class="sc">==</span> <span class="st">"wage_st"</span>,</span>
-<span id="cb6-280"><a href="#cb6-280" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Wave 1 — Before  (Feb–Mar 1992)"</span>,</span>
-<span id="cb6-281"><a href="#cb6-281" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Wave 2 — After   (Nov–Dec 1992)"</span>)</span>
-<span id="cb6-282"><a href="#cb6-282" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-283"><a href="#cb6-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(wage))</span>
-<span id="cb6-284"><a href="#cb6-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-285"><a href="#cb6-285" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wage_long, <span class="fu">aes</span>(<span class="at">x =</span> wage, <span class="at">fill =</span> state_name)) <span class="sc">+</span></span>
-<span id="cb6-286"><a href="#cb6-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.10</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> <span class="fl">0.65</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb6-287"><a href="#cb6-287" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">4.25</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"grey45"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb6-288"><a href="#cb6-288" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">5.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> col_pa,   <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb6-289"><a href="#cb6-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">4.25</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="st">"$4.25</span><span class="sc">\n</span><span class="st">(old federal min)"</span>,</span>
-<span id="cb6-290"><a href="#cb6-290" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="fl">1.6</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>,   <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
-<span id="cb6-291"><a href="#cb6-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">5.05</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="st">"$5.05</span><span class="sc">\n</span><span class="st">(NJ new min)"</span>,</span>
-<span id="cb6-292"><a href="#cb6-292" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="fl">1.6</span>, <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.08</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> col_pa) <span class="sc">+</span></span>
-<span id="cb6-293"><a href="#cb6-293" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"NJ"</span> <span class="ot">=</span> col_nj, <span class="st">"PA"</span> <span class="ot">=</span> col_pa),</span>
-<span id="cb6-294"><a href="#cb6-294" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"NJ"</span> <span class="ot">=</span> <span class="st">"New Jersey"</span>, <span class="st">"PA"</span> <span class="ot">=</span> <span class="st">"Pennsylvania"</span>)) <span class="sc">+</span></span>
-<span id="cb6-295"><a href="#cb6-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> <span class="fu">dollar_format</span>(), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fl">4.0</span>, <span class="fl">6.5</span>, <span class="fl">0.25</span>),</span>
-<span id="cb6-296"><a href="#cb6-296" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">3.9</span>, <span class="fl">6.6</span>)) <span class="sc">+</span></span>
-<span id="cb6-297"><a href="#cb6-297" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>wave, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb6-298"><a href="#cb6-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb6-299"><a href="#cb6-299" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Starting Wage Distributions in NJ and PA, Before and After the Minimum Wage Increase"</span>,</span>
-<span id="cb6-300"><a href="#cb6-300" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"New Jersey raised its minimum wage from $4.25 to $5.05 in April 1992; Pennsylvania did not change"</span>,</span>
-<span id="cb6-301"><a href="#cb6-301" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Starting Wage ($/hr)"</span>, <span class="at">y =</span> <span class="st">"Number of Stores"</span>, <span class="at">fill =</span> <span class="cn">NULL</span>,</span>
-<span id="cb6-302"><a href="#cb6-302" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Source: Card &amp; Krueger (1994). Dashed lines mark the old ($4.25) and new NJ ($5.05) minimum wages."</span></span>
-<span id="cb6-303"><a href="#cb6-303" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-304"><a href="#cb6-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
-<span id="cb6-305"><a href="#cb6-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-306"><a href="#cb6-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-307"><a href="#cb6-307" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Before:** both states cluster at $4.25 — the distributions are nearly identical.</span>
-<span id="cb6-308"><a href="#cb6-308" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**After:** NJ shows a sharp spike exactly at $5.05, as employers raised wages to comply. PA is unchanged.</span>
+<span id="cb6-265"><a href="#cb6-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(</span>
+<span id="cb6-266"><a href="#cb6-266" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">"N = %d stores.  R² = %.3f."</span>, <span class="fu">nrow</span>(balanced), <span class="fu">summary</span>(mod)<span class="sc">$</span>r.squared)</span>
+<span id="cb6-267"><a href="#cb6-267" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-268"><a href="#cb6-268" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="st">"Source: replication of Card &amp; Krueger (1994), Table 4, Column (i)."</span>)</span>
+<span id="cb6-269"><a href="#cb6-269" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-270"><a href="#cb6-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-271"><a href="#cb6-271" aria-hidden="true" tabindex="-1"></a>The NJ coefficient of <span class="in">`r round(coef(mod)[2], 2)`</span> closely matches the paper's reported 2.76 (paper SE = 1.07).</span>
+<span id="cb6-272"><a href="#cb6-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-273"><a href="#cb6-273" aria-hidden="true" tabindex="-1"></a><span class="fu">## Additional Analysis: Did the Treatment Actually Happen? {#additional}</span></span>
+<span id="cb6-274"><a href="#cb6-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-275"><a href="#cb6-275" aria-hidden="true" tabindex="-1"></a>Causal identification with DiD requires the treatment to have actually occurred. The plot below shows the full distribution of starting wages in NJ and PA before and after the April 1992 increase — something the paper only summarizes as column means.</span>
+<span id="cb6-276"><a href="#cb6-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-277"><a href="#cb6-277" aria-hidden="true" tabindex="-1"></a><span class="in">```{r wage-distribution}</span></span>
+<span id="cb6-278"><a href="#cb6-278" aria-hidden="true" tabindex="-1"></a>wage_long <span class="ot">&lt;-</span> balanced <span class="sc">|&gt;</span></span>
+<span id="cb6-279"><a href="#cb6-279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(state_name, wage_st, wage_st2) <span class="sc">|&gt;</span></span>
+<span id="cb6-280"><a href="#cb6-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(wage_st, wage_st2), <span class="at">names_to =</span> <span class="st">"wave"</span>, <span class="at">values_to =</span> <span class="st">"wage"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-281"><a href="#cb6-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-282"><a href="#cb6-282" aria-hidden="true" tabindex="-1"></a>    <span class="at">wave =</span> <span class="fu">if_else</span>(wave <span class="sc">==</span> <span class="st">"wage_st"</span>,</span>
+<span id="cb6-283"><a href="#cb6-283" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Wave 1 — Before  (Feb–Mar 1992)"</span>,</span>
+<span id="cb6-284"><a href="#cb6-284" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Wave 2 — After   (Nov–Dec 1992)"</span>)</span>
+<span id="cb6-285"><a href="#cb6-285" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-286"><a href="#cb6-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(wage))</span>
+<span id="cb6-287"><a href="#cb6-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-288"><a href="#cb6-288" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wage_long, <span class="fu">aes</span>(<span class="at">x =</span> wage, <span class="at">fill =</span> state_name)) <span class="sc">+</span></span>
+<span id="cb6-289"><a href="#cb6-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.10</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> <span class="fl">0.65</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb6-290"><a href="#cb6-290" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">4.25</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"grey45"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb6-291"><a href="#cb6-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">5.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> col_pa,   <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb6-292"><a href="#cb6-292" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">4.25</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="st">"$4.25</span><span class="sc">\n</span><span class="st">(old federal min)"</span>,</span>
+<span id="cb6-293"><a href="#cb6-293" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="fl">1.6</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>,   <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb6-294"><a href="#cb6-294" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">5.05</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="st">"$5.05</span><span class="sc">\n</span><span class="st">(NJ new min)"</span>,</span>
+<span id="cb6-295"><a href="#cb6-295" aria-hidden="true" tabindex="-1"></a>           <span class="at">vjust =</span> <span class="fl">1.6</span>, <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.08</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> col_pa) <span class="sc">+</span></span>
+<span id="cb6-296"><a href="#cb6-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"NJ"</span> <span class="ot">=</span> col_nj, <span class="st">"PA"</span> <span class="ot">=</span> col_pa),</span>
+<span id="cb6-297"><a href="#cb6-297" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"NJ"</span> <span class="ot">=</span> <span class="st">"New Jersey"</span>, <span class="st">"PA"</span> <span class="ot">=</span> <span class="st">"Pennsylvania"</span>)) <span class="sc">+</span></span>
+<span id="cb6-298"><a href="#cb6-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> <span class="fu">dollar_format</span>(), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="fl">4.0</span>, <span class="fl">6.5</span>, <span class="fl">0.25</span>),</span>
+<span id="cb6-299"><a href="#cb6-299" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">3.9</span>, <span class="fl">6.6</span>)) <span class="sc">+</span></span>
+<span id="cb6-300"><a href="#cb6-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>wave, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-301"><a href="#cb6-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-302"><a href="#cb6-302" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Starting Wage Distributions in NJ and PA, Before and After the Minimum Wage Increase"</span>,</span>
+<span id="cb6-303"><a href="#cb6-303" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"New Jersey raised its minimum wage from $4.25 to $5.05 in April 1992; Pennsylvania did not change"</span>,</span>
+<span id="cb6-304"><a href="#cb6-304" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Starting Wage ($/hr)"</span>, <span class="at">y =</span> <span class="st">"Number of Stores"</span>, <span class="at">fill =</span> <span class="cn">NULL</span>,</span>
+<span id="cb6-305"><a href="#cb6-305" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">"Source: Card &amp; Krueger (1994). Dashed lines mark the old ($4.25) and new NJ ($5.05) minimum wages."</span></span>
+<span id="cb6-306"><a href="#cb6-306" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-307"><a href="#cb6-307" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span>
+<span id="cb6-308"><a href="#cb6-308" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb6-309"><a href="#cb6-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-310"><a href="#cb6-310" aria-hidden="true" tabindex="-1"></a>This confirms the natural experiment worked as intended.</span>
-<span id="cb6-311"><a href="#cb6-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-312"><a href="#cb6-312" aria-hidden="true" tabindex="-1"></a><span class="fu">## Discussion</span></span>
-<span id="cb6-313"><a href="#cb6-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-314"><a href="#cb6-314" aria-hidden="true" tabindex="-1"></a><span class="fu">### Replication fidelity</span></span>
-<span id="cb6-315"><a href="#cb6-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-316"><a href="#cb6-316" aria-hidden="true" tabindex="-1"></a>The replication recovers the paper's central finding with minimal deviation: ~2.76 FTE workers per store, matching the published value. Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper's reported SEs.</span>
-<span id="cb6-317"><a href="#cb6-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-318"><a href="#cb6-318" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why DiD enables causal inference</span></span>
-<span id="cb6-319"><a href="#cb6-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-320"><a href="#cb6-320" aria-hidden="true" tabindex="-1"></a>A standard OLS regression of wave-2 employment on a New Jersey indicator would be hopelessly confounded: NJ and PA restaurants differ in chain mix, local market conditions, and countless other factors that also affect employment. DiD solves this by differencing away two layers of confounding:</span>
-<span id="cb6-321"><a href="#cb6-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-322"><a href="#cb6-322" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Time-invariant store heterogeneity** — by looking at the *change* in employment ($\Delta$FTE) rather than its level, any fixed characteristic of a store (location, chain, management quality) cancels out.</span>
-<span id="cb6-323"><a href="#cb6-323" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Common time trends** — by subtracting Pennsylvania's average change from New Jersey's, any shock that hit the entire fast-food industry in 1992 (a national recession, changing consumer tastes) is netted out.</span>
+<span id="cb6-310"><a href="#cb6-310" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Before:** both states cluster at $4.25 — the distributions are nearly identical.</span>
+<span id="cb6-311"><a href="#cb6-311" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**After:** NJ shows a sharp spike exactly at $5.05, as employers raised wages to comply. PA is unchanged.</span>
+<span id="cb6-312"><a href="#cb6-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-313"><a href="#cb6-313" aria-hidden="true" tabindex="-1"></a>This confirms the natural experiment worked as intended.</span>
+<span id="cb6-314"><a href="#cb6-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-315"><a href="#cb6-315" aria-hidden="true" tabindex="-1"></a><span class="fu">## Discussion</span></span>
+<span id="cb6-316"><a href="#cb6-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-317"><a href="#cb6-317" aria-hidden="true" tabindex="-1"></a><span class="fu">### Replication fidelity</span></span>
+<span id="cb6-318"><a href="#cb6-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-319"><a href="#cb6-319" aria-hidden="true" tabindex="-1"></a>The replication recovers the paper's central finding: the DiD estimate is <span class="in">`r sprintf("%.2f", did)`</span> FTE workers per store (paper: 2.76). Minor discrepancies can arise from two sources: (1) sample definition — the paper presents several cuts of the data with slightly different inclusion rules; (2) standard error computation — HC1 heteroskedasticity-robust standard errors are used throughout, consistent with the paper's reported SEs.</span>
+<span id="cb6-320"><a href="#cb6-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-321"><a href="#cb6-321" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why DiD enables causal inference</span></span>
+<span id="cb6-322"><a href="#cb6-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-323"><a href="#cb6-323" aria-hidden="true" tabindex="-1"></a>A standard OLS regression of wave-2 employment on a New Jersey indicator would be hopelessly confounded: NJ and PA restaurants differ in chain mix, local market conditions, and countless other factors that also affect employment. DiD solves this by differencing away two layers of confounding:</span>
 <span id="cb6-324"><a href="#cb6-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-325"><a href="#cb6-325" aria-hidden="true" tabindex="-1"></a>What remains is the *differential* change experienced by NJ restaurants relative to PA — the only difference between the two groups being New Jersey's minimum wage increase. Under the identification assumption, this differential is the causal effect of the policy.</span>
-<span id="cb6-326"><a href="#cb6-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-327"><a href="#cb6-327" aria-hidden="true" tabindex="-1"></a><span class="fu">### The parallel trends assumption</span></span>
-<span id="cb6-328"><a href="#cb6-328" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-329"><a href="#cb6-329" aria-hidden="true" tabindex="-1"></a>DiD's validity rests on a single key assumption: **parallel trends** — in the absence of the minimum wage increase, NJ and PA employment would have evolved along the same trajectory. This is not directly testable (we never observe the NJ counterfactual), but several pieces of evidence support it:</span>
-<span id="cb6-330"><a href="#cb6-330" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-331"><a href="#cb6-331" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Geographic proximity:** NJ and PA share a border; the two states face similar labor demand conditions in the Philadelphia and New York metro areas.</span>
-<span id="cb6-332"><a href="#cb6-332" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Pre-period wage parity:** As shown in Table 2, wave-1 starting wages in NJ and PA are nearly identical (~$4.25), confirming both groups were at the same point in the wage distribution before the experiment.</span>
-<span id="cb6-333"><a href="#cb6-333" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Treatment validation:** The wage distribution plot shows the NJ distribution shifting sharply to $5.05 after April 1992 while PA is unchanged — the treatment occurred exactly as designed.</span>
-<span id="cb6-334"><a href="#cb6-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-335"><a href="#cb6-335" aria-hidden="true" tabindex="-1"></a>If parallel trends holds, the DiD estimate of ~2.76 FTE workers per store is a credible causal estimate, not a correlation. Card and Krueger's provocative finding — that a minimum wage increase *raised* relative employment — has since been replicated, debated, and refined over three decades, but the methodological template they established remains the gold standard for policy evaluation with natural experiments.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb6-325"><a href="#cb6-325" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Time-invariant store heterogeneity** — by looking at the *change* in employment ($\Delta$FTE) rather than its level, any fixed characteristic of a store (location, chain, management quality) cancels out.</span>
+<span id="cb6-326"><a href="#cb6-326" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Common time trends** — by subtracting Pennsylvania's average change from New Jersey's, any shock that hit the entire fast-food industry in 1992 (a national recession, changing consumer tastes) is netted out.</span>
+<span id="cb6-327"><a href="#cb6-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-328"><a href="#cb6-328" aria-hidden="true" tabindex="-1"></a>What remains is the *differential* change experienced by NJ restaurants relative to PA — the only difference between the two groups being New Jersey's minimum wage increase. Under the identification assumption, this differential is the causal effect of the policy.</span>
+<span id="cb6-329"><a href="#cb6-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-330"><a href="#cb6-330" aria-hidden="true" tabindex="-1"></a><span class="fu">### The parallel trends assumption</span></span>
+<span id="cb6-331"><a href="#cb6-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-332"><a href="#cb6-332" aria-hidden="true" tabindex="-1"></a>DiD's validity rests on a single key assumption: **parallel trends** — in the absence of the minimum wage increase, NJ and PA employment would have evolved along the same trajectory. This is not directly testable (we never observe the NJ counterfactual), but several pieces of evidence support it:</span>
+<span id="cb6-333"><a href="#cb6-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-334"><a href="#cb6-334" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Geographic proximity:** NJ and PA share a border; the two states face similar labor demand conditions in the Philadelphia and New York metro areas.</span>
+<span id="cb6-335"><a href="#cb6-335" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Pre-period wage parity:** As shown in Table 2, wave-1 starting wages in NJ and PA are nearly identical (~$4.25), confirming both groups were at the same point in the wage distribution before the experiment.</span>
+<span id="cb6-336"><a href="#cb6-336" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Treatment validation:** The wage distribution plot shows the NJ distribution shifting sharply to $5.05 after April 1992 while PA is unchanged — the treatment occurred exactly as designed.</span>
+<span id="cb6-337"><a href="#cb6-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-338"><a href="#cb6-338" aria-hidden="true" tabindex="-1"></a>If parallel trends holds, the DiD estimate of <span class="in">`r sprintf("%.2f", did)`</span> FTE workers per store (paper: 2.76) is a credible causal estimate, not a correlation. Card and Krueger's provocative finding — that a minimum wage increase *raised* relative employment — has since been replicated, debated, and refined over three decades, but the methodological template they established remains the gold standard for policy evaluation with natural experiments.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
