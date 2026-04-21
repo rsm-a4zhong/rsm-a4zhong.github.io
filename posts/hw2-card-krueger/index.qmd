@@ -96,9 +96,9 @@ ck <- ck_raw |>
     state_name = if_else(state == 1, "NJ", "PA"),
     fte1 = empft + 0.5 * emppt + nmgrs,
     fte2 = case_when(
-      status2 %in% c(2, 3) ~ 0,                             # closed/renovating → FTE = 0
-      !is.na(empft2)        ~ empft2 + 0.5 * emppt2 + nmgrs2, # open & interviewed → compute FTE
-      TRUE                  ~ NA_real_                        # refused / not reached → exclude
+      status2 == 2           ~ 0,                           # permanently closed → FTE = 0
+      !is.na(empft2)         ~ empft2 + 0.5 * emppt2 + nmgrs2, # open & interviewed → compute FTE
+      TRUE                   ~ NA_real_                         # refused / not reached → exclude
     ),,
     dfte = fte2 - fte1
   )
@@ -132,10 +132,10 @@ smry <- balanced |>
 nj_s <- smry |> filter(state_name == "NJ")
 pa_s <- smry |> filter(state_name == "PA")
 
-t1 <- t.test(fte1    ~ state, data = balanced)
-t2 <- t.test(fte2    ~ state, data = balanced)
-t3 <- t.test(wage_st ~ state, data = balanced)
-t4 <- t.test(wage_st2~ state, data = balanced)
+t1 <- t.test(fte1    ~ state_name, data = balanced)
+t2 <- t.test(fte2    ~ state_name, data = balanced)
+t3 <- t.test(wage_st ~ state_name, data = balanced)
+t4 <- t.test(wage_st2~ state_name, data = balanced)
 
 fmt <- function(m, se) sprintf("%.2f (%.2f)", m, se)
 
