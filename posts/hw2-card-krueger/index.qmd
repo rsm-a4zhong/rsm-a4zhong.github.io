@@ -187,7 +187,7 @@ m <- balanced |>
   summarise(
     before    = mean(fte1,  na.rm = TRUE),
     before_se = sd(fte1,    na.rm = TRUE) / sqrt(n()),
-    after     = mean(fte2,  na.rm = TRUE)
+    after     = mean(fte2,  na.rm = TRUE),
     after_se  = sd(fte2,    na.rm = TRUE) / sqrt(n()),
     change    = mean(dfte,  na.rm = TRUE),
     change_se = sd(dfte,    na.rm = TRUE) / sqrt(n())
