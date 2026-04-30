@@ -822,7 +822,7 @@ SE(\hat\theta) \;=\; \sqrt{\,\frac{\hat\pi_A(1 - \hat\pi_A)}{n_A} + \frac{\hat\p
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="Quantity">Point estimate (&lt;U+03B8&gt;&lt;U+0302&gt;)</td>
+<td class="gt_row gt_left" headers="Quantity">Point estimate (θ̂)</td>
 <td class="gt_row gt_right" headers="Value">0.0270</td>
 </tr>
 <tr class="even">
@@ -895,7 +895,7 @@ H_0: \theta = 0 \qquad \text{versus} \qquad H_1: \theta \neq 0.
 z \;=\; \frac{\hat\theta - 0}{SE(\hat\theta)}.
 \]</span></p>
 <p>The logic of this standardisation proceeds in three steps. First, by the CLT, <span class="math inline">\(\hat\theta\)</span> is approximately Normal in large samples, and under <span class="math inline">\(H_0\)</span> its mean is zero. Second, dividing a Normal variable by its standard deviation produces a standard Normal: <span class="math inline">\(z \;\dot\sim\; N(0, 1)\)</span> under <span class="math inline">\(H_0\)</span>. Third, because we know the null distribution of <span class="math inline">\(z\)</span> exactly, we can compute the probability of observing a value at least as extreme as ours — the p-value — and use it to grade the evidence.</p>
-<p>A brief note on terminology is in order. This procedure is often referred to as a “t-test,” but the name is imprecise in the current context. The classical two-sample t-test arises when the data are drawn from a Normal distribution and the variance is estimated from the sample; the ratio of estimate to estimated SE then follows an <em>exact</em> t-distribution. In our setting, the data are Bernoulli, not Normal, so there is no exact t-distribution result. What we have is the CLT-based <em>approximation</em> that <span class="math inline">\(\hat\theta / SE(\hat\theta)\)</span> is approximately standard Normal, which makes this strictly speaking a z-test. For the sample sizes typical of digital experiments, the practical distinction between the t- and standard Normal distributions is negligible, which is why the terms are used interchangeably in practice — but it is worth knowing why.</p>
+<p>A brief note on terminology is in order. This procedure is often referred to as a “t-test,” but the name is imprecise in the current context. The classical two-sample t-test arises when the data are drawn from a Normal distribution and the variance is estimated from the sample; the ratio of estimate to estimated SE then follows an <em>exact</em> t-distribution. In our setting, the data are Bernoulli, not Normal, so there is no exact t-distribution result. What we have is the CLT-based <em>approximation</em> that <span class="math inline">\(\hat\theta / SE(\hat\theta)\)</span> is approximately standard Normal, which makes this, strictly speaking, a z-test. For the sample sizes typical of digital experiments, the practical distinction between the t- and standard Normal distributions is negligible, which is why the terms are used interchangeably in practice — but it is worth knowing why.</p>
 <p>Applying the formula to our simulated data:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>z_stat  <span class="ot">&lt;-</span> theta_hat <span class="sc">/</span> se_analytical</span>
@@ -1359,7 +1359,7 @@ z \;=\; \frac{\hat\theta - 0}{SE(\hat\theta)}.
 <td colspan="2" class="gt_heading gt_title gt_font_normal"><strong>Two-Sample Test for Difference in Proportions</strong></td>
 </tr>
 <tr class="gt_heading even">
-<td colspan="2" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">Against a two-sided alternative at &lt;U+03B1&gt; = 0.05</td>
+<td colspan="2" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">Against a two-sided alternative at α = 0.05</td>
 </tr>
 <tr class="gt_col_headings header">
 <th id="Quantity" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Quantity</th>
@@ -1368,7 +1368,7 @@ z \;=\; \frac{\hat\theta - 0}{SE(\hat\theta)}.
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="Quantity">Estimate (&lt;U+03B8&gt;&lt;U+0302&gt;)</td>
+<td class="gt_row gt_left" headers="Quantity">Estimate (θ̂)</td>
 <td class="gt_row gt_right" headers="Value">0.0270</td>
 </tr>
 <tr class="even">
@@ -1865,7 +1865,7 @@ Y_i \;=\; \beta_0 + \beta_1 D_i + \varepsilon_i.
 <td colspan="5" class="gt_heading gt_title gt_font_normal"><strong>Regression of Sign-Up Indicator on CTA Assignment</strong></td>
 </tr>
 <tr class="gt_heading even">
-<td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">&lt;U+03B2&gt;&lt;U+0302&gt;&lt;U+2081&gt; numerically equals the two-sample difference in means</td>
+<td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">β̂₁ numerically equals the two-sample difference in means</td>
 </tr>
 <tr class="gt_col_headings header">
 <th id="term" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Coefficient</th>
@@ -1877,14 +1877,14 @@ Y_i \;=\; \beta_0 + \beta_1 D_i + \varepsilon_i.
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
-<td class="gt_row gt_left" headers="term">&lt;U+03B2&gt;&lt;U+2080&gt; (intercept) &lt;U+2014&gt; estimates &lt;U+03C0&gt;_B</td>
+<td class="gt_row gt_left" headers="term">β₀ (intercept) — estimates π_B</td>
 <td class="gt_row gt_right" headers="estimate">0.1860</td>
 <td class="gt_row gt_right" headers="std.error">0.0126</td>
 <td class="gt_row gt_right" headers="statistic">14.7194</td>
 <td class="gt_row gt_right" headers="p.value">0.0000</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_left" headers="term">&lt;U+03B2&gt;&lt;U+2081&gt; (coefficient on D) &lt;U+2014&gt; estimates &lt;U+03B8&gt;</td>
+<td class="gt_row gt_left" headers="term">β₁ (coefficient on D) — estimates θ</td>
 <td class="gt_row gt_right" headers="estimate">0.0270</td>
 <td class="gt_row gt_right" headers="std.error">0.0179</td>
 <td class="gt_row gt_right" headers="statistic">1.5109</td>
@@ -2389,7 +2389,7 @@ Y_i \;=\; \beta_0 + \beta_1 D_i + \varepsilon_i.
 <td colspan="2" class="gt_heading gt_title gt_font_normal"><strong>False Positive Rate Under Repeated Peeking</strong></td>
 </tr>
 <tr class="gt_heading even">
-<td colspan="2" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">10,000 simulated experiments under H&lt;U+2080&gt;: &lt;U+03C0&gt;_A = &lt;U+03C0&gt;_B = 0.20</td>
+<td colspan="2" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">10,000 simulated experiments under H₀: π_A = π_B = 0.20</td>
 </tr>
 <tr class="gt_col_headings header">
 <th id="Quantity" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Quantity</th>
@@ -3180,7 +3180,7 @@ Y_i \;=\; \beta_0 + \beta_1 D_i + \varepsilon_i.
 <span id="cb9-298"><a href="#cb9-298" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-299"><a href="#cb9-299" aria-hidden="true" tabindex="-1"></a>The logic of this standardisation proceeds in three steps. First, by the CLT, $\hat\theta$ is approximately Normal in large samples, and under $H_0$ its mean is zero. Second, dividing a Normal variable by its standard deviation produces a standard Normal: $z \;\dot\sim\; N(0, 1)$ under $H_0$. Third, because we know the null distribution of $z$ exactly, we can compute the probability of observing a value at least as extreme as ours — the p-value — and use it to grade the evidence.</span>
 <span id="cb9-300"><a href="#cb9-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-301"><a href="#cb9-301" aria-hidden="true" tabindex="-1"></a>A brief note on terminology is in order. This procedure is often referred to as a "t-test," but the name is imprecise in the current context. The classical two-sample t-test arises when the data are drawn from a Normal distribution and the variance is estimated from the sample; the ratio of estimate to estimated SE then follows an *exact* t-distribution. In our setting, the data are Bernoulli, not Normal, so there is no exact t-distribution result. What we have is the CLT-based *approximation* that $\hat\theta / SE(\hat\theta)$ is approximately standard Normal, which makes this strictly speaking a z-test. For the sample sizes typical of digital experiments, the practical distinction between the t- and standard Normal distributions is negligible, which is why the terms are used interchangeably in practice — but it is worth knowing why.</span>
+<span id="cb9-301"><a href="#cb9-301" aria-hidden="true" tabindex="-1"></a>A brief note on terminology is in order. This procedure is often referred to as a "t-test," but the name is imprecise in the current context. The classical two-sample t-test arises when the data are drawn from a Normal distribution and the variance is estimated from the sample; the ratio of estimate to estimated SE then follows an *exact* t-distribution. In our setting, the data are Bernoulli, not Normal, so there is no exact t-distribution result. What we have is the CLT-based *approximation* that $\hat\theta / SE(\hat\theta)$ is approximately standard Normal, which makes this, strictly speaking, a z-test. For the sample sizes typical of digital experiments, the practical distinction between the t- and standard Normal distributions is negligible, which is why the terms are used interchangeably in practice — but it is worth knowing why.</span>
 <span id="cb9-302"><a href="#cb9-302" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-303"><a href="#cb9-303" aria-hidden="true" tabindex="-1"></a>Applying the formula to our simulated data:</span>
 <span id="cb9-304"><a href="#cb9-304" aria-hidden="true" tabindex="-1"></a></span>
