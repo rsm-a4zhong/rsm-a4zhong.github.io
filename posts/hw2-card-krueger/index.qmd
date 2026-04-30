@@ -97,9 +97,10 @@ ck <- ck_raw |>
     fte1 = empft + 0.5 * emppt + nmgrs,
     fte2 = case_when(
       status2 == 2           ~ 0,                           # permanently closed → FTE = 0
+      status2 == 3           ~ 0,                           # under renovation     → FTE = 0
       !is.na(empft2)         ~ empft2 + 0.5 * emppt2 + nmgrs2, # open & interviewed → compute FTE
       TRUE                   ~ NA_real_                         # refused / not reached → exclude
-    ),,
+    ),
     dfte = fte2 - fte1
   )
 
@@ -108,7 +109,7 @@ balanced <- ck |> filter(!is.na(fte1), !is.na(fte2))
 
 The full dataset has `r nrow(ck)` stores (`r sum(ck$state == 1)` in NJ, `r sum(ck$state == 0)` in PA). After restricting to stores with usable employment data in both survey waves, we have `r nrow(balanced)` stores.
 
-**Handling of closed restaurants.** Following Card & Krueger's Table 3 Column (i) specification, permanently closed stores (`status2 == 2`) and stores under renovation (`status2 == 3`) are assigned FTE = 0 in wave 2. Stores under renovation (`status2 == 3`) are also assigned FTE = 0, following the paper's convention. Stores that refused or could not be reached are treated as missing and excluded from the balanced panel.
+**Handling of closed restaurants.** Following Card & Krueger's Table 3 Column (i) specification, permanently closed stores (`status2 == 2`) and stores under renovation (`status2 == 3`) are assigned FTE = 0 in wave 2. Stores that refused or could not be reached are treated as missing and excluded from the balanced panel.
 
 ## Replication: Table 2 — Descriptive Statistics {#table2}
 
