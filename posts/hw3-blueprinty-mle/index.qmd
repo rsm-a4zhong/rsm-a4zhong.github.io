@@ -1,0 +1,510 @@
+---
+title: "Does Blueprinty's Software Really Boost Patent Approvals?"
+subtitle: "A Hand-Rolled Poisson MLE Case Study"
+description: "Deriving the Poisson log-likelihood from scratch, fitting it numerically with optim(), and using counterfactual prediction to estimate the causal effect of being a Blueprinty customer on patent counts."
+author: "Alex Zhong"
+date: "2026-05-13"
+categories: [MLE, Poisson regression, R, marketing analytics]
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    toc-location: left
+    code-tools: true
+    fig-width: 9
+    fig-height: 5.5
+    fig-align: center
+execute:
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(gt)
+library(broom)
+library(scales)
+library(knitr)
+
+theme_set(
+  theme_minimal(base_size = 12) +
+    theme(
+      plot.title       = element_text(face = "bold", size = 13),
+      plot.subtitle    = element_text(color = "grey40", size = 11),
+      plot.caption     = element_text(color = "grey50", size = 9, hjust = 0),
+      panel.grid.minor = element_blank(),
+      strip.text       = element_text(face = "bold")
+    )
+)
+
+col_cust   <- "#2C5F7F"   # customers
+col_noncust <- "#C94F4F"  # non-customers
+col_neutral <- "#7A7A7A"
+```
+
+## Introduction
+
+Blueprinty is a small software firm that sells a single product: a tool for drafting patent applications destined for the US Patent and Trademark Office. Its marketing team has a story they would like to tell — *firms that use Blueprinty get more patents approved* — and they would like that story to be backed by data.
+
+The dream dataset, of course, would be a within-firm comparison: each company's patenting rate *before* and *after* adopting the software. That dataset does not exist. What does exist is a cross-section of 1,500 mature engineering firms, observed once, with their five-year patent count, their region, their age in years, and a single binary flag for whether they are currently a Blueprinty customer.
+
+This is enough to compute a difference in means, but a difference in means here cannot be trusted as the effect of the software. Blueprinty's customers are *self-selected*: they tend to be in particular regions, of particular ages, and probably of particular ambitions. If the firms that buy Blueprinty would have outpatented the others anyway, a naïve comparison will give the software credit for differences that were already there.
+
+The remedy in this post is the workhorse of count-data marketing analytics: a **Poisson regression** estimated by **maximum likelihood**. I derive the likelihood by hand, code it up, find the MLE numerically with `optim()`, sanity-check against `glm(..., family = poisson)`, and finally translate the customer coefficient into the only quantity a marketing executive cares about — *how many extra patents does using Blueprinty buy you, holding age and region fixed?*
+
+## Exploring the Data
+
+```{r load-data}
+bp <- readr::read_csv(
+  "blueprinty.csv",
+  show_col_types = FALSE
+) |>
+  mutate(
+    customer_lbl = if_else(iscustomer == 1, "Customer", "Non-customer"),
+    customer_lbl = factor(customer_lbl, levels = c("Non-customer", "Customer"))
+  )
+```
+
+The data are 1,500 firms split into two groups — 1,019 non-customers (68%) and 481 customers (32%). I plot patent counts side-by-side on a common x-axis so that the two distributions can be compared without optical illusion.
+
+```{r hist-patents}
+#| echo: false
+#| fig-cap: "Distribution of patents over the past 5 years, by customer status. Vertical dashed lines show group means."
+
+means_pat <- bp |>
+  group_by(customer_lbl) |>
+  summarise(m = mean(patents), .groups = "drop")
+
+ggplot(bp, aes(x = patents, fill = customer_lbl)) +
+  geom_histogram(binwidth = 1, color = "white", alpha = 0.9) +
+  geom_vline(data = means_pat,
+             aes(xintercept = m),
+             linetype = "dashed", color = "grey20", linewidth = 0.6) +
+  geom_text(data = means_pat,
+            aes(x = m, y = Inf, label = sprintf("mean = %.2f", m)),
+            vjust = 1.5, hjust = -0.1, size = 3.4, color = "grey20",
+            inherit.aes = FALSE) +
+  facet_wrap(~ customer_lbl) +
+  scale_fill_manual(values = c("Non-customer" = col_noncust, "Customer" = col_cust)) +
+  scale_x_continuous(breaks = seq(0, 16, 2)) +
+  labs(
+    title = "Patents awarded in the past 5 years",
+    subtitle = "Customers tend to skew slightly higher, but the spread is wide",
+    x = "Patents (count)", y = "Number of firms"
+  ) +
+  guides(fill = "none")
+```
+
+```{r tab-patents}
+#| echo: false
+bp |>
+  group_by(customer_lbl) |>
+  summarise(
+    n      = n(),
+    mean   = mean(patents),
+    median = median(patents),
+    sd     = sd(patents),
+    .groups = "drop"
+  ) |>
+  gt() |>
+  fmt_number(columns = c(mean, sd), decimals = 2) |>
+  cols_label(customer_lbl = "Group", n = "N",
+             mean = "Mean", median = "Median", sd = "SD") |>
+  tab_header(title = "Patent counts by customer status") |>
+  tab_options(table.font.size = 13)
+```
+
+Customers average **4.13 patents** over the last five years versus **3.47** for non-customers — a raw gap of about 0.66 patents, or roughly 19%. The shape of the two distributions is similar (right-skewed counts, mode around 3), so the difference is in location, not form.
+
+Whether that 0.66-patent gap is *because of* Blueprinty is the question of the entire post. Before I trust the gap, I want to see how the two groups differ on the dimensions I *can* control for: region and age.
+
+### Region
+
+```{r region-mix}
+#| echo: false
+#| fig-cap: "Regional composition of customers vs. non-customers."
+
+bp |>
+  count(region, customer_lbl) |>
+  group_by(customer_lbl) |>
+  mutate(share = n / sum(n)) |>
+  ungroup() |>
+  ggplot(aes(x = region, y = share, fill = customer_lbl)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.65) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_fill_manual(values = c("Non-customer" = col_noncust, "Customer" = col_cust),
+                    name = NULL) +
+  labs(
+    title = "Customers are concentrated in the Northeast",
+    subtitle = "Share of firms within each customer-status group",
+    x = NULL, y = "Share of group"
+  ) +
+  theme(legend.position = "top")
+```
+
+Customers are dramatically over-represented in the Northeast: roughly **68%** of customers are based there, versus only **27%** of non-customers. This is the single largest demographic difference between the two groups. If Northeastern firms patent more for reasons unrelated to Blueprinty (concentration of universities, R&D-heavy industries, denser legal services), then a raw mean comparison will mis-attribute that regional effect to the software.
+
+### Age
+
+```{r hist-age}
+#| echo: false
+#| fig-cap: "Firm age (years since incorporation), by customer status."
+
+means_age <- bp |>
+  group_by(customer_lbl) |>
+  summarise(m = mean(age), .groups = "drop")
+
+ggplot(bp, aes(x = age, fill = customer_lbl)) +
+  geom_histogram(binwidth = 2, color = "white", alpha = 0.9) +
+  geom_vline(data = means_age,
+             aes(xintercept = m),
+             linetype = "dashed", color = "grey20", linewidth = 0.6) +
+  geom_text(data = means_age,
+            aes(x = m, y = Inf, label = sprintf("mean = %.1f", m)),
+            vjust = 1.5, hjust = -0.1, size = 3.4, color = "grey20",
+            inherit.aes = FALSE) +
+  facet_wrap(~ customer_lbl) +
+  scale_fill_manual(values = c("Non-customer" = col_noncust, "Customer" = col_cust)) +
+  labs(
+    title = "Firm age by customer status",
+    subtitle = "Customers are slightly older on average, but the overlap is heavy",
+    x = "Age (years since incorporation)", y = "Number of firms"
+  ) +
+  guides(fill = "none")
+```
+
+Customers are on average **26.9 years old**, non-customers **26.1**. The difference is small and the two histograms overlap heavily, so age is unlikely to be the dominant confounder here — but I include it (and its square) in the regression below because the relationship between firm age and patent productivity is plausibly hump-shaped: young firms haven't built portfolios yet, very old firms may have slowed down.
+
+The takeaway from this EDA is straightforward: **customers and non-customers differ visibly on region and slightly on age**, so the naïve 0.66-patent gap is mixing the effect of the software with the effect of being a Northeastern firm. The next sections build the machinery to separate the two.
+
+## A Simple Poisson Model via Maximum Likelihood
+
+Patent counts are non-negative integers (`0, 1, 2, …, 16` in this sample) with mean and variance of similar magnitude. The Normal distribution is a poor fit on principle — it has support on the entire real line and a fixed variance independent of its mean. The natural starting point for non-negative integer outcomes is the **Poisson distribution**, in which a single parameter $\lambda$ governs both the mean and the variance of the count.
+
+### Likelihood and log-likelihood
+
+For one firm, $Y \sim \text{Poisson}(\lambda)$ has probability mass function
+
+$$
+f(Y \mid \lambda) = \frac{e^{-\lambda}\lambda^{Y}}{Y!}.
+$$
+
+Assume that the $n = 1{,}500$ firms are independent and identically distributed draws from $\text{Poisson}(\lambda)$. The joint likelihood is the product over the sample,
+
+$$
+L(\lambda \mid Y_1, \ldots, Y_n) \;=\; \prod_{i=1}^{n} \frac{e^{-\lambda}\lambda^{Y_i}}{Y_i!}
+\;=\; e^{-n\lambda}\, \lambda^{\sum_i Y_i}\, \prod_{i=1}^{n}\frac{1}{Y_i!}.
+$$
+
+Products of probabilities underflow on a computer, and they are also painful to differentiate, so I move to the log scale:
+
+$$
+\ell(\lambda) \;=\; \log L(\lambda) \;=\; -n\lambda \;+\; \left(\sum_{i=1}^{n} Y_i\right) \log \lambda \;-\; \sum_{i=1}^{n}\log(Y_i!).
+$$
+
+The last term does not depend on $\lambda$ and is the same constant across every candidate value, so for the purposes of finding the MLE it can be ignored.
+
+### Coding the log-likelihood
+
+```{r poisson-loglik-fn}
+poisson_loglikelihood <- function(lambda, Y) {
+  if (lambda <= 0) return(-Inf)
+  -length(Y) * lambda + sum(Y) * log(lambda) - sum(lgamma(Y + 1))
+}
+```
+
+I use `lgamma(Y + 1)` rather than `log(factorial(Y))` because the gamma function evaluates safely for any non-negative integer count without overflow.
+
+### The log-likelihood as a function of $\lambda$
+
+Plotting $\ell(\lambda)$ across a grid of plausible $\lambda$ values, using the observed `patents` vector as $Y$:
+
+```{r ll-plot}
+#| echo: false
+#| fig-cap: "Poisson log-likelihood as a function of $\\lambda$, evaluated on the 1,500 observed patent counts. The dashed line marks the sample mean."
+
+Y <- bp$patents
+lambda_grid <- seq(0.5, 8, length.out = 400)
+ll_vals <- sapply(lambda_grid, poisson_loglikelihood, Y = Y)
+
+tibble(lambda = lambda_grid, ll = ll_vals) |>
+  ggplot(aes(lambda, ll)) +
+  geom_line(color = col_cust, linewidth = 1) +
+  geom_vline(xintercept = mean(Y), linetype = "dashed", color = "grey30") +
+  annotate("text", x = mean(Y), y = max(ll_vals),
+           label = sprintf("Y̅ = %.3f", mean(Y)),
+           hjust = -0.1, vjust = 1, size = 3.6, color = "grey20") +
+  labs(
+    title = "The log-likelihood is single-peaked at the sample mean",
+    x = expression(lambda),
+    y = expression(ell(lambda))
+  )
+```
+
+The curve is smooth and concave, with a single global maximum. To "read the MLE off the plot" you simply drop a vertical line from the peak — it lands almost exactly at $\bar{Y} \approx 3.685$.
+
+### Deriving the MLE analytically
+
+Setting the derivative of $\ell(\lambda)$ to zero,
+
+$$
+\frac{d\ell}{d\lambda} \;=\; -n \;+\; \frac{1}{\lambda}\sum_{i=1}^{n} Y_i \;=\; 0
+\quad\Longrightarrow\quad
+\hat\lambda_{\mathrm{MLE}} \;=\; \frac{1}{n}\sum_{i=1}^{n} Y_i \;=\; \bar{Y}.
+$$
+
+The second derivative $-\sum Y_i / \lambda^2$ is strictly negative for $\lambda > 0$, so this critical point is indeed a maximum. The result is satisfyingly intuitive: the MLE of a Poisson rate is just the sample mean, which is also the obvious method-of-moments estimator since $\mathbb{E}[Y] = \lambda$.
+
+### Verifying numerically
+
+```{r mle-numeric}
+mle_simple <- optim(
+  par     = 1,
+  fn      = function(lambda) -poisson_loglikelihood(lambda, Y),
+  method  = "Brent",
+  lower   = 0.001,
+  upper   = 50
+)
+
+tibble(
+  Quantity = c("Sample mean Y̅", "Numerical MLE (optim, Brent)"),
+  Value    = c(mean(Y), mle_simple$par)
+) |>
+  gt() |>
+  fmt_number(columns = "Value", decimals = 6) |>
+  tab_header(title = "Closed-form vs. numerical MLE") |>
+  tab_options(table.font.size = 13)
+```
+
+The numerical optimiser lands on the sample mean to six decimal places. This is exactly the behaviour the theory predicts — the optimisation is solving the same first-order condition that gave us $\bar{Y}$ in closed form. The two answers will only diverge to numerical-tolerance precision.
+
+## Poisson Regression
+
+The constant-$\lambda$ model is a strawman: a Northeastern 30-year-old engineering firm is *not* drawing patents from the same distribution as a Midwestern 15-year-old startup. To let the rate vary with firm characteristics, I extend the model to
+
+$$
+Y_i \sim \text{Poisson}(\lambda_i), \qquad \lambda_i = \exp(X_i'\beta).
+$$
+
+Two design choices need explanation.
+
+**Why an exponential link?** The Poisson rate $\lambda_i$ must be strictly positive — a firm cannot have a negative expected number of patents. But $X_i'\beta$, being a sum of real-valued covariates times real-valued coefficients, is unbounded above and below. The exponential function maps $\mathbb{R}$ to $(0, \infty)$, so $\exp(X_i'\beta)$ is a clean way to keep $\lambda_i$ on the positive real line for any $\beta$ the optimiser might try. It also gives the coefficients a nice multiplicative interpretation, which I lean on at the end.
+
+**Why age squared?** A simple linear effect would say *every additional year of firm age adds (or subtracts) the same amount of expected log-patents, forever.* That is implausible. Young firms haven't had time to build engineering teams; very old firms may be slower-moving incumbents past their R&D prime. Adding $\text{age}^2$ lets the model capture the kind of inverted-U shape that this story implies, without committing to a specific parametric form.
+
+**Why drop one region?** With five regions and an intercept, including all five region dummies would mean the five region columns and the intercept column are perfectly collinear (their sum equals the intercept column of all ones). The design matrix would not be invertible and the Hessian would be singular. The fix is to drop one region — here I drop **Midwest** — which then becomes the baseline group against which the other four region coefficients are compared.
+
+### Vectorised log-likelihood
+
+For the regression case, the log-likelihood is
+
+$$
+\ell(\beta) \;=\; \sum_{i=1}^{n}\Big[Y_i\,X_i'\beta \;-\; \exp(X_i'\beta) \;-\; \log(Y_i!)\Big].
+$$
+
+```{r reg-loglik}
+poisson_regression_loglikelihood <- function(beta, Y, X) {
+  eta    <- as.numeric(X %*% beta)        # linear predictor
+  lambda <- exp(eta)
+  sum(Y * eta - lambda - lgamma(Y + 1))
+}
+```
+
+I work directly with $\eta_i = X_i'\beta$ rather than re-exponentiating because `Y * eta` is numerically cleaner than `Y * log(lambda)` (they're algebraically equal, but the former avoids a redundant `log(exp(·))` round-trip).
+
+### Building the design matrix
+
+```{r build-X}
+bp_mod <- bp |>
+  mutate(
+    age_c   = age - mean(age),    # center age to stabilize age + age^2 optimization
+    age_c2  = age_c^2
+  )
+
+# Midwest is the omitted (baseline) region
+X <- model.matrix(
+  ~ age_c + age_c2 + region + iscustomer,
+  data = bp_mod |>
+    mutate(region = factor(region, levels = c("Midwest", "Northeast", "Northwest", "South", "Southwest")))
+)
+Y <- bp_mod$patents
+
+dim(X)
+colnames(X)
+```
+
+The age variable is mean-centered before squaring so the linear and quadratic columns are weakly correlated (otherwise their correlation is essentially 1, which makes the Hessian poorly conditioned and slows the optimiser).
+
+### Fitting by hand with `optim()`
+
+```{r fit-by-hand}
+neg_ll <- function(beta) -poisson_regression_loglikelihood(beta, Y, X)
+
+fit <- optim(
+  par     = rep(0, ncol(X)),
+  fn      = neg_ll,
+  method  = "BFGS",
+  hessian = TRUE,
+  control = list(reltol = 1e-12, maxit = 500)
+)
+
+beta_hat  <- setNames(fit$par, colnames(X))
+vcov_hat  <- solve(fit$hessian)            # neg_ll is -log L, so its Hessian = -H(ℓ)
+se_hat    <- sqrt(diag(vcov_hat))
+
+mle_table <- tibble(
+  term      = colnames(X),
+  estimate  = beta_hat,
+  std_error = se_hat
+)
+
+mle_table |>
+  gt() |>
+  fmt_number(columns = c(estimate, std_error), decimals = 4) |>
+  cols_label(term = "Term", estimate = "Estimate", std_error = "Std. Error") |>
+  tab_header(title = "Poisson regression — hand-rolled MLE",
+             subtitle = "Standard errors from the negative inverse Hessian of the log-likelihood") |>
+  tab_options(table.font.size = 13)
+```
+
+A note on the variance formula. The score equations say that at the MLE the gradient of $\ell$ is zero, and the asymptotic covariance is $-H(\ell)^{-1}$, the negative inverse of the Hessian of the log-likelihood. Because I minimised the *negative* log-likelihood, the Hessian that `optim()` returns is already $-H(\ell)$, so I can invert it directly: `solve(fit$hessian)` gives $\widehat{\text{Var}}(\hat\beta)$ in one step, and the standard errors are the square roots of its diagonal.
+
+### Sanity check against `glm()`
+
+```{r glm-check}
+glm_fit <- glm(
+  patents ~ age_c + age_c2 + region + iscustomer,
+  data    = bp_mod |>
+    mutate(region = factor(region, levels = c("Midwest", "Northeast", "Northwest", "South", "Southwest"))),
+  family  = poisson(link = "log")
+)
+
+glm_tbl <- broom::tidy(glm_fit) |>
+  transmute(term, glm_estimate = estimate, glm_se = std.error)
+
+mle_table |>
+  left_join(glm_tbl, by = "term") |>
+  mutate(
+    diff_est = estimate - glm_estimate,
+    diff_se  = std_error - glm_se
+  ) |>
+  gt() |>
+  fmt_number(columns = c(estimate, std_error, glm_estimate, glm_se),
+             decimals = 4) |>
+  fmt_number(columns = c(diff_est, diff_se), decimals = 6) |>
+  cols_label(
+    term = "Term",
+    estimate = "MLE β̂", std_error = "MLE SE",
+    glm_estimate = "glm() β̂", glm_se = "glm() SE",
+    diff_est = "Δ β̂", diff_se = "Δ SE"
+  ) |>
+  tab_header(title = "Hand-rolled MLE vs. `glm(family = poisson)`") |>
+  tab_options(table.font.size = 12)
+```
+
+Coefficient estimates agree to four decimals or better. The standard errors agree just as closely: the optimiser's BFGS Hessian is a finite-difference approximation, whereas `glm()` uses the analytical Fisher information, and the small numerical gap is the entire story of the disagreement. If the two had diverged meaningfully, that would be the signal to refit with tighter tolerances — they don't, so I move on.
+
+### Reading the coefficients
+
+```{r coef-interpretation}
+#| echo: false
+mle_table |>
+  mutate(
+    z       = estimate / std_error,
+    p_value = 2 * pnorm(-abs(z)),
+    mult    = exp(estimate),
+    sig     = case_when(
+      p_value < 0.001 ~ "***",
+      p_value < 0.01  ~ "**",
+      p_value < 0.05  ~ "*",
+      p_value < 0.10  ~ ".",
+      TRUE            ~ ""
+    )
+  ) |>
+  gt() |>
+  fmt_number(columns = c(estimate, std_error, z, mult), decimals = 4) |>
+  fmt_number(columns = p_value, decimals = 4) |>
+  cols_label(
+    term = "Term", estimate = "β̂", std_error = "SE",
+    z = "z", p_value = "p", mult = "exp(β̂)", sig = ""
+  ) |>
+  tab_header(title = "Poisson regression — interpretation",
+             subtitle = "exp(β̂) is the multiplicative effect on expected patents")  |>
+  tab_options(table.font.size = 12)
+```
+
+A few things stand out.
+
+The **intercept** is the log-expected patent count for a Midwest firm of average age and zero $\text{age}^2$ deviation — not a particularly interpretable baseline on its own, but useful for the counterfactual exercise below.
+
+The **age** coefficient is positive and the **age-squared** coefficient is negative and highly significant — exactly the inverted-U shape I hoped for. The patenting rate rises with firm age, peaks somewhere around the sample mean, then declines as firms get older.
+
+The **region** coefficients tell a noisy story: estimates are small and standard errors are comparable in magnitude, so the data do not provide strong evidence that any region is fundamentally more or less productive than the Midwest baseline after age is held fixed. (This is consistent with the EDA observation that customers are concentrated in the Northeast — much of the raw regional advantage is really a customer-mix effect, which the model now isolates.)
+
+The **customer coefficient** is the headline. It is positive, comfortably significant, and its $\exp(\hat\beta)$ is about **1.23** — meaning, holding age and region fixed, the model predicts a Blueprinty customer to file about **23% more patents** than an otherwise-identical non-customer.
+
+A 23% multiplicative effect is meaningful but not extraordinary. It is also crucially *not* the same as "Blueprinty customers get 0.66 more patents than non-customers" (which is the raw gap) — the regression has now partialled out region and age, and the within-group effect that remains is the cleaner estimate of what the software might be doing.
+
+## The Effect of Blueprinty's Software
+
+The 23% number above is a coefficient interpretation, not a marketing-ready answer. Because the Poisson model is multiplicative in $\lambda$, a single percentage cannot be translated into "additional patents per firm" without picking a baseline. Different firms have different baselines, so the right average effect depends on the mix.
+
+The cleanest answer is to ask the fitted model directly: *if every firm in the sample were a customer, how many patents would the model predict — and if every firm were a non-customer, how many?* The difference, averaged across firms, is the average treatment effect on the observed sample.
+
+```{r counterfactuals}
+X0 <- X; X0[, "iscustomer"] <- 0
+X1 <- X; X1[, "iscustomer"] <- 1
+
+y_hat_0 <- as.numeric(exp(X0 %*% beta_hat))
+y_hat_1 <- as.numeric(exp(X1 %*% beta_hat))
+
+ate <- mean(y_hat_1 - y_hat_0)
+ate_per_year <- ate / 5
+
+tibble(
+  Quantity = c(
+    "Predicted mean patents — every firm as non-customer (Ȳ₀)",
+    "Predicted mean patents — every firm as customer (Ȳ₁)",
+    "Average treatment effect (over 5 years)",
+    "Average treatment effect (per year)"
+  ),
+  Value = c(mean(y_hat_0), mean(y_hat_1), ate, ate_per_year)
+) |>
+  gt() |>
+  fmt_number(columns = "Value", decimals = 3) |>
+  tab_header(title = "Counterfactual estimate of the Blueprinty effect")  |>
+  tab_options(table.font.size = 13)
+```
+
+```{r ate-plot}
+#| echo: false
+#| fig-cap: "Firm-by-firm predicted patent counts under the two counterfactuals. Each point is one firm; the dashed 45° line is 'no effect.'"
+
+tibble(y0 = y_hat_0, y1 = y_hat_1) |>
+  ggplot(aes(y0, y1)) +
+  geom_point(alpha = 0.35, color = col_cust, size = 1.2) +
+  geom_abline(slope = 1, intercept = 0,
+              linetype = "dashed", color = "grey30") +
+  coord_equal() +
+  labs(
+    title    = "Predicted patents: customer vs non-customer counterfactual",
+    subtitle = "Every firm sits above the 45° line — the model predicts more patents under Blueprinty",
+    x = expression(hat(y)[0]~"(non-customer)"),
+    y = expression(hat(y)[1]~"(customer)")
+  )
+```
+
+The model estimates an average effect of roughly **0.79 additional patents over five years**, or **0.16 per year**, attributable to being a Blueprinty customer once age and region are held fixed. Every firm lies above the 45° line in the counterfactual scatter: there is no firm for which the model thinks Blueprinty would have *hurt* — the multiplicative form guarantees this once $\hat\beta_{\text{customer}} > 0$, but the spread above the line is wider for high-baseline firms (more patents to multiply) than for low-baseline ones.
+
+### What this does and does not establish
+
+This is observational data, not a randomised experiment. The regression gives evidence that *after controlling for the covariates I happen to observe*, Blueprinty customers patent more. It does not — and cannot — rule out the possibility that unobserved characteristics drive both the choice to buy Blueprinty and the propensity to file patents. Customer firms may have:
+
+- More patent-experienced legal teams that *both* shop for specialised software *and* file better applications.
+- More aggressive R&D budgets that *both* fund Blueprinty licences *and* generate more inventions to patent.
+- A patenting-oriented culture that *both* recognises the value of Blueprinty *and* produces patents at a higher rate regardless.
+
+Any of these stories is consistent with the 0.79-patent gap. The Poisson regression closes the obvious gaps — region and age — but it cannot close the gap left by what is not in the dataset. The honest summary is therefore: *the data are consistent with Blueprinty's marketing claim, and the magnitude is plausible (≈23% lift, or ~0.16 extra patents per firm per year), but a causal interpretation would require either a randomised pilot, a quasi-experiment around the timing of adoption, or a much richer set of firm-level controls.*
+
+That nuance is not what a marketing slide wants to hear. But it is the analysis the data can support.
